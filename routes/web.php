@@ -1,0 +1,82 @@
+<?php
+
+use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\Auth\AuthController;
+use App\Http\Controllers\Admin\ActivityLogController;
+use App\Http\Controllers\Admin\AdminDashboardController;
+use App\Http\Controllers\Admin\AnalyticsController;
+use App\Http\Controllers\Admin\ReadingLevelController;
+use App\Http\Controllers\Admin\SectionController;
+use App\Http\Controllers\Admin\StudentController;
+use App\Http\Controllers\Admin\TeacherController;
+use App\Http\Controllers\Teacher\DashboardController;
+use App\Http\Controllers\Teacher\ProfileController;
+use App\Http\Controllers\Teacher\AssessmentController;
+use App\Http\Controllers\Teacher\InterventionController;
+use App\Http\Controllers\Teacher\ReportController;
+use App\Http\Controllers\Teacher\StudentController as TeacherStudentController;
+
+Route::get('/', fn () => redirect()->route('login'));
+
+/*── Guest ───────────────────────────────────────────────*/
+Route::middleware('guest')->group(function () {
+    Route::get('/register',  [AuthController::class, 'showRegisterForm'])->name('register');
+    Route::post('/register', [AuthController::class, 'register']);
+    Route::get('/login',     [AuthController::class, 'showLoginForm'])->name('login');
+    Route::post('/login',    [AuthController::class, 'login']);
+    Route::get('/forgot-password', fn () => view('auth.forgot-password'))->name('password.request');
+});
+
+Route::middleware('auth')->post('/logout', [AuthController::class, 'logout'])->name('logout');
+
+/*── Admin ───────────────────────────────────────────────*/
+Route::prefix('admin')->name('admin.')->middleware(['auth', 'admin'])->group(function () {
+
+    Route::get('/dashboard', [AdminDashboardController::class, 'index'])->name('dashboard');
+
+    Route::resource('teachers', TeacherController::class);
+    Route::patch('teachers/{teacher}/approve', [TeacherController::class, 'approve'])->name('teachers.approve');
+    Route::patch('teachers/{teacher}/reject',  [TeacherController::class, 'reject'])->name('teachers.reject');
+
+    Route::resource('sections', SectionController::class);
+
+    Route::resource('students', StudentController::class);
+    Route::patch('students/{student}/archive', [StudentController::class, 'archive'])->name('students.archive');
+    Route::patch('students/{student}/restore', [StudentController::class, 'restore'])->name('students.restore');
+
+    Route::resource('reading-levels', ReadingLevelController::class);
+
+    Route::get('activity-logs', [ActivityLogController::class, 'index'])->name('activity-logs.index');
+
+    // Analytics & Reports
+    Route::get('analytics', [AnalyticsController::class, 'index'])->name('analytics.index');
+});
+
+/*── Teacher ─────────────────────────────────────────────*/
+Route::prefix('teacher')->name('teacher.')->middleware(['auth', 'teacher'])->group(function () {
+
+    // Dashboard
+    Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
+
+    // Profile
+    Route::get('/profile',           [ProfileController::class, 'edit'])->name('profile.edit');
+    Route::put('/profile',           [ProfileController::class, 'update'])->name('profile.update');
+    Route::post('/profile/photo',    [ProfileController::class, 'uploadPhoto'])->name('profile.photo');
+    Route::put('/profile/password',  [ProfileController::class, 'changePassword'])->name('profile.password');
+
+    // Students — full resource
+    Route::resource('students', TeacherStudentController::class);
+
+    // Assessments
+    Route::resource('assessments', AssessmentController::class)
+         ->only(['index', 'create', 'store', 'show']);
+
+    // Interventions
+    Route::resource('interventions', InterventionController::class)
+         ->only(['index', 'show', 'update']);
+    Route::patch('interventions/{intervention}/complete',
+         [InterventionController::class, 'complete'])->name('interventions.complete');
+
+    // Reports
+    Route::get('/reports', [ReportController::class, 'index'])->name('reports.index');
+});
