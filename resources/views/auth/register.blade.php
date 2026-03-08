@@ -7,6 +7,7 @@
     <title>Register - TESRead</title>
     <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700;900&family=Work+Sans:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+    <link rel="icon" type="image/jpg" href="{{ asset('favicon.jpg') }}">
     <style>
         :root { --blue:#003A8C; --blue-dark:#002870; --blue-mid:#0050C2; --red:#C8102E; --red-dark:#a00d25; }
 

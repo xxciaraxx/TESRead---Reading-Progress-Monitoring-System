@@ -41,25 +41,27 @@ html, body { overflow: hidden !important; height: 100% !important; }
         align-items: center;
         gap: 12px;
         padding-bottom: 10px;
-        border-bottom: 2.5px solid #003A8C;
+        border-bottom: 2.5px solid #000;
         margin-bottom: 5px;
+        font-family: 'Times New Roman', Times, serif;
     }
     .p-header-logo { width: 60px; height: 60px; object-fit: contain; flex-shrink: 0; }
-    .p-header-center { flex: 1; text-align: center; }
-    .p-header-republic { font-size: 8pt; color: #222; }
-    .p-header-dept  { font-size: 12pt; font-weight: 800; color: #003A8C; text-transform: uppercase; letter-spacing: .4px; line-height: 1.2; }
-    .p-header-div   { font-size: 8.5pt; color: #111; font-weight: 600; margin-top: 1px; }
-    .p-header-school { font-size: 8pt; color: #555; margin-top: 1px; }
+    .p-header-center { flex: 1; text-align: center; font-family: 'Times New Roman', Times, serif; }
+    .p-header-republic { font-size: 8pt; color: #000; font-family: 'Times New Roman', Times, serif; }
+    .p-header-dept  { font-size: 12pt; font-weight: 800; color: #000; text-transform: uppercase; letter-spacing: .4px; line-height: 1.2; font-family: 'Times New Roman', Times, serif; }
+    .p-header-div   { font-size: 8.5pt; color: #000; font-weight: 600; margin-top: 1px; font-family: 'Times New Roman', Times, serif; }
+    .p-header-school { font-size: 8pt; color: #000; margin-top: 1px; font-family: 'Times New Roman', Times, serif; }
 
     /* ── Document title ── */
     .p-doc-title {
         text-align: center;
         padding: 7px 0 8px;
-        border-bottom: 2px solid #003A8C;
+        border-bottom: 2px solid #000;
         margin-bottom: 10px;
+        font-family: 'Times New Roman', Times, serif;
     }
-    .p-doc-title h2 { font-size: 12pt; font-weight: 800; color: #003A8C; text-transform: uppercase; letter-spacing: .8px; margin: 0 0 2px; }
-    .p-doc-title p  { font-size: 7.5pt; color: #666; margin: 0; }
+    .p-doc-title h2 { font-size: 12pt; font-weight: 800; color: #000; text-transform: uppercase; letter-spacing: .8px; margin: 0 0 2px; font-family: 'Times New Roman', Times, serif; }
+    .p-doc-title p  { font-size: 7.5pt; color: #000; margin: 0; font-family: 'Times New Roman', Times, serif; }
 
     /* ── Student hero section ── */
     .p-student-hero {
@@ -197,7 +199,7 @@ html, body { overflow: hidden !important; height: 100% !important; }
             <div class="p-header-republic">Republic of the Philippines</div>
             <div class="p-header-dept">Department of Education</div>
             <div class="p-header-div">Schools Division of Ilocos Sur</div>
-            <div class="p-header-school">Tampugo Elementary School &bull; Tampugo, Tagudin, Ilocos Sur</div>
+            <div class="p-header-school">Tampugo Elementary School &bull; Borono, Tagudin, Ilocos Sur</div>
         </div>
         <img src="{{ asset('images/TES-logo.jpg') }}" class="p-header-logo" alt="School Logo" style="opacity:0;">
     </div>
@@ -275,13 +277,6 @@ html, body { overflow: hidden !important; height: 100% !important; }
                             <div class="p-bar-fill" style="width:{{ $latest->comprehension_score }}%;background:{{ $latest->comprehension_score >= 80 ? '#0d9448' : ($latest->comprehension_score >= 65 ? '#c47d0e' : '#C8102E') }};"></div>
                         </div>
                     </div>
-                    <div style="display:flex;justify-content:space-between;align-items:center;
-                                margin-top:9px;padding:6px 10px;background:#f8faff;border-radius:6px;">
-                        <span style="font-size:8pt;font-weight:600;">Reading Sessions / Week</span>
-                        <span class="p-chip {{ $latest->reading_sessions_per_week <= 1 ? 'p-chip-r' : 'p-chip-g' }}">
-                            {{ $latest->reading_sessions_per_week }} / week
-                        </span>
-                    </div>
                 @else
                     <p style="font-size:9pt;color:#94a3b8;text-align:center;padding:12px 0;">No assessments recorded yet.</p>
                 @endif
@@ -345,7 +340,6 @@ html, body { overflow: hidden !important; height: 100% !important; }
                             <th>Date</th>
                             <th>Fluency</th>
                             <th>Comprehension</th>
-                            <th>Sessions/wk</th>
                             <th>Risk Level</th>
                             <th>Assessed By</th>
                         </tr>
@@ -362,11 +356,6 @@ html, body { overflow: hidden !important; height: 100% !important; }
                             <td>
                                 <span class="p-chip {{ $a->comprehension_score >= 80 ? 'p-chip-g' : ($a->comprehension_score >= 65 ? 'p-chip-a' : 'p-chip-r') }}">
                                     {{ $a->comprehension_score }}%
-                                </span>
-                            </td>
-                            <td>
-                                <span class="p-chip {{ $a->reading_sessions_per_week <= 1 ? 'p-chip-r' : 'p-chip-g' }}">
-                                    {{ $a->reading_sessions_per_week }}/wk
                                 </span>
                             </td>
                             <td>
@@ -545,9 +534,6 @@ html, body { overflow: hidden !important; height: 100% !important; }
                             <span style="font-size:12px;color:var(--muted);">
                                 C: <strong style="color:{{ $assessment->comprehension_score >= 80 ? 'var(--success)' : ($assessment->comprehension_score >= 65 ? '#b8860b' : 'var(--danger)') }};">{{ $assessment->comprehension_score }}%</strong>
                             </span>
-                            <span style="font-size:12px;color:var(--muted);">
-                                <strong>{{ $assessment->reading_sessions_per_week }}/wk</strong>
-                            </span>
                         </div>
                         @if($assessment->risk_level)
                             @if(str_contains($assessment->risk_level,'Below'))
@@ -613,13 +599,6 @@ html, body { overflow: hidden !important; height: 100% !important; }
                             <span style="font-weight:800;color:{{ $latest->comprehension_score >= 80 ? 'var(--success)' : ($latest->comprehension_score >= 65 ? '#b8860b' : 'var(--danger)') }};">{{ $latest->comprehension_score }}%</span>
                         </div>
                         <div class="risk-bar"><div class="risk-bar-fill" style="width:{{ $latest->comprehension_score }}%;background:{{ $latest->comprehension_score >= 80 ? 'var(--success)' : ($latest->comprehension_score >= 65 ? 'var(--warning)' : 'var(--danger)') }};"></div></div>
-                    </div>
-                    <div style="display:flex;justify-content:space-between;align-items:center;
-                                padding:10px 14px;background:#f8faff;border-radius:8px;">
-                        <span style="font-size:12.5px;font-weight:600;">Sessions / Week</span>
-                        <span class="badge {{ $latest->reading_sessions_per_week <= 1 ? 'badge-danger' : 'badge-success' }}">
-                            {{ $latest->reading_sessions_per_week }} / week
-                        </span>
                     </div>
                 </div>
             @else

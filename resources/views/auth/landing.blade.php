@@ -1,4 +1,3 @@
-{{-- resources/views/auth/landing.blade.php --}}
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -7,6 +6,7 @@
     <title>TESRead – Digital Reading Progress Monitoring</title>
     <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700;900&family=Work+Sans:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+    <link rel="icon" type="image/jpg" href="{{ asset('favicon.jpg') }}">
     <style>
         :root {
             --blue:      #003A8C;

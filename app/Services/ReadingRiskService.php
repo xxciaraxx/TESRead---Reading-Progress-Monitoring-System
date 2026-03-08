@@ -11,9 +11,9 @@ class ReadingRiskService
     const APPROACHING = 'Approaching Expected Literacy Standard';
     const MEETING     = 'Meeting or Exceeding Literacy Standard';
 
-    public function calculateRisk(float $fluency, float $comprehension, int $sessionsPerWeek): string
+    public function calculateRisk(float $fluency, float $comprehension): string
     {
-        if ($fluency < 70 || $comprehension < 65 || $sessionsPerWeek <= 1) {
+        if ($fluency < 70 || $comprehension < 65) {
             return self::BELOW;
         }
         if ($fluency < 85 || $comprehension < 80) {
@@ -26,8 +26,7 @@ class ReadingRiskService
     {
         $risk = $this->calculateRisk(
             (float) $assessment->fluency_score,
-            (float) $assessment->comprehension_score,
-            (int)   $assessment->reading_sessions_per_week
+            (float) $assessment->comprehension_score
         );
 
         $assessment->update(['risk_level' => $risk]);

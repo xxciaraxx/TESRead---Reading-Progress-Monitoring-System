@@ -31,7 +31,7 @@ html, body { overflow: hidden !important; height: 100% !important; }
     <div style="display:flex;gap:16px;flex-wrap:wrap;">
         <div style="display:flex;align-items:center;gap:8px;">
             <span class="badge badge-danger"><i class="fas fa-exclamation-triangle"></i> Below Standard</span>
-            <span class="text-muted text-small">Fluency &lt; 70 OR Comprehension &lt; 65 OR Sessions ≤ 1/week</span>
+            <span class="text-muted text-small">Fluency &lt; 70 OR Comprehension &lt; 65</span>
         </div>
         <div style="display:flex;align-items:center;gap:8px;">
             <span class="badge badge-warning"><i class="fas fa-chart-line"></i> Approaching</span>
@@ -102,18 +102,7 @@ html, body { overflow: hidden !important; height: 100% !important; }
                                min="0" max="100" step="0.01" placeholder="e.g. 72.00" required
                                oninput="updateRiskPreview()">
                         @error('comprehension_score') <span class="invalid-feedback">{{ $message }}</span> @enderror
-                    </div>
-
-                    <div class="form-group" style="grid-column:span 2;">
-                        <label class="form-label">
-                            Reading Sessions per Week <span class="required">*</span>
-                        </label>
-                        <input type="number" name="reading_sessions_per_week"
-                               class="form-control {{ $errors->has('reading_sessions_per_week') ? 'is-invalid' : '' }}"
-                               value="{{ old('reading_sessions_per_week') }}"
-                               min="0" max="7" placeholder="e.g. 3" required
-                               oninput="updateRiskPreview()">
-                        @error('reading_sessions_per_week') <span class="invalid-feedback">{{ $message }}</span> @enderror
+                        <div class="form-hint">Reading comprehension percentage</div>
                     </div>
                 </div>
 
@@ -150,49 +139,43 @@ html, body { overflow: hidden !important; height: 100% !important; }
 @push('scripts')
 <script>
 function updateRiskPreview() {
-    const fluency    = parseFloat(document.querySelector('[name=fluency_score]').value) || null;
-    const comp       = parseFloat(document.querySelector('[name=comprehension_score]').value) || null;
-    const sessions   = parseInt(document.querySelector('[name=reading_sessions_per_week]').value) || null;
-    const preview    = document.getElementById('riskPreview');
-    const box        = document.getElementById('riskBox');
-    const label      = document.getElementById('riskLabel');
-    const reason     = document.getElementById('riskReason');
+    const fluency = parseFloat(document.querySelector('[name=fluency_score]').value) || null;
+    const comp    = parseFloat(document.querySelector('[name=comprehension_score]').value) || null;
+    const preview = document.getElementById('riskPreview');
+    const box     = document.getElementById('riskBox');
+    const label   = document.getElementById('riskLabel');
+    const reason  = document.getElementById('riskReason');
 
-    if (fluency === null || comp === null || sessions === null) {
+    if (fluency === null || comp === null) {
         preview.style.display = 'none';
         return;
     }
 
     preview.style.display = 'block';
 
-    let risk, color, reasonText;
+    let risk, color, reasonText = [];
 
-    if (fluency < 70 || comp < 65 || sessions <= 1) {
-        risk       = '⚠️ Below Expected Literacy Standard';
-        color      = '#C8102E';
-        reasonText = [];
-        if (fluency < 70)   reasonText.push('Fluency score below 70');
-        if (comp < 65)      reasonText.push('Comprehension below 65');
-        if (sessions <= 1)  reasonText.push('Reading sessions ≤ 1/week');
-        reasonText = reasonText.join(' · ');
+    if (fluency < 70 || comp < 65) {
+        risk  = '⚠️ Below Expected Literacy Standard';
+        color = '#C8102E';
+        if (fluency < 70) reasonText.push('Fluency below 70');
+        if (comp < 65)    reasonText.push('Comprehension below 65');
     } else if (fluency < 85 || comp < 80) {
-        risk       = '📈 Approaching Expected Literacy Standard';
-        color      = '#b8860b';
-        reasonText = [];
+        risk  = '📈 Approaching Expected Literacy Standard';
+        color = '#b8860b';
         if (fluency < 85) reasonText.push('Fluency below 85');
         if (comp < 80)    reasonText.push('Comprehension below 80');
-        reasonText = reasonText.join(' · ');
     } else {
         risk       = '✅ Meeting or Exceeding Literacy Standard';
         color      = '#28a745';
-        reasonText = 'Student meets all benchmarks.';
+        reasonText = ['Student meets all benchmarks.'];
     }
 
     box.style.borderLeftColor = color;
     box.style.background      = color + '12';
     label.style.color         = color;
     label.textContent         = risk;
-    reason.textContent        = reasonText;
+    reason.textContent        = reasonText.join(' · ');
 }
 </script>
 @endpush

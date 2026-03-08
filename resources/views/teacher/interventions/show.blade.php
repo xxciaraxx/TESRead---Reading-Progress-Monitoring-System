@@ -154,9 +154,6 @@ html, body { overflow: hidden !important; height: 100% !important; }
                 <div style="display:flex;justify-content:space-between;align-items:center;
                             padding:10px 14px;background:#fff8f8;border-radius:8px;">
                     <span style="font-size:12.5px;font-weight:600;">Sessions / Week</span>
-                    <span class="badge {{ $a->reading_sessions_per_week <= 1 ? 'badge-danger' : 'badge-success' }}">
-                        {{ $a->reading_sessions_per_week }} / week
-                    </span>
                 </div>
 
                 @if($a->notes)

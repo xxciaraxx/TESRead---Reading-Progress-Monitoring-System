@@ -118,12 +118,6 @@ html, body { overflow: hidden !important; height: 100% !important; }
                     </div>
                 </div>
 
-                <div style="display:flex;justify-content:space-between;align-items:center;">
-                    <span class="font-semibold" style="font-size:13px;">Sessions per Week</span>
-                    <span class="badge {{ $assessment->reading_sessions_per_week <= 1 ? 'badge-danger' : 'badge-success' }}">
-                        {{ $assessment->reading_sessions_per_week }}/week
-                    </span>
-                </div>
             </div>
         </div>
 

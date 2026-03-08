@@ -7,6 +7,7 @@ use App\Models\Student;
 use App\Models\Assessment;
 use App\Services\ReadingRiskService;
 use Illuminate\Support\Facades\DB;
+use Carbon\Carbon;
 
 class DashboardController extends Controller
 {
@@ -17,10 +18,28 @@ class DashboardController extends Controller
         4 => ['label' => 'Q4 — Feb to Mar', 'short' => 'Q4', 'months' => [2, 3]],
     ];
 
-    public function index()
+    public function index(\Illuminate\Http\Request $request)
     {
-        $teacherId = auth()->id();
-        $year      = now()->year;
+        $teacherId  = auth()->id();
+
+        // Determine current school year base
+        $currentYear = now()->month >= 6 ? now()->year : now()->year - 1;
+
+        // Allow viewing a past school year via ?sy=YYYY
+        $year = (int) $request->get('sy', $currentYear);
+
+        // Build list of available school years (from first assessment up to current)
+        $firstYear = Assessment::where('teacher_id', $teacherId)
+            ->orderBy('assessed_on')
+            ->value('assessed_on');
+        $firstSY = $firstYear
+            ? (int) (\Carbon\Carbon::parse($firstYear)->month >= 6
+                ? \Carbon\Carbon::parse($firstYear)->year
+                : \Carbon\Carbon::parse($firstYear)->year - 1)
+            : $currentYear;
+        $availableYears = collect(range($firstSY, $currentYear))->reverse()->values();
+
+        $isCurrentYear = $year === $currentYear;
 
         /* ── KPI counts ─────────────────────────── */
         $totalStudents = Student::active()->where('teacher_id', $teacherId)->count();
@@ -42,7 +61,7 @@ class DashboardController extends Controller
         /* ── Quarterly monitoring ───────────────── */
         $currentQuarter = $this->currentQuarter();
 
-        $quarterlyData = collect(self::QUARTERS)->map(function ($def, $q) use ($teacherId, $year, $totalStudents, $currentQuarter) {
+        $quarterlyData = collect(self::QUARTERS)->map(function ($def, $q) use ($teacherId, $year, $totalStudents, $currentQuarter, $isCurrentYear) {
             $months   = $def['months'];
             $sameYear = array_values(array_filter($months, fn($m) => $m >= 6));
             $nextYear = array_values(array_filter($months, fn($m) => $m < 6));
@@ -65,6 +84,7 @@ class DashboardController extends Controller
 
             $agg = $query->selectRaw(
                 'COUNT(*) as assessments,
+                 COUNT(DISTINCT student_id) as students_assessed,
                  ROUND(AVG(fluency_score),1) as avg_fluency,
                  ROUND(AVG(comprehension_score),1) as avg_comp,
                  SUM(CASE WHEN risk_level = ? THEN 1 ELSE 0 END) as cnt_meeting,
@@ -73,7 +93,7 @@ class DashboardController extends Controller
                 [ReadingRiskService::MEETING, ReadingRiskService::APPROACHING, ReadingRiskService::BELOW]
             )->first();
 
-            $assessed  = (int) ($agg->assessments ?? 0);
+            $assessed  = (int) ($agg->students_assessed ?? 0);
             $safeTotal = max($totalStudents, 1);
             $pct       = min(100, round($assessed / $safeTotal * 100));
 
@@ -81,16 +101,16 @@ class DashboardController extends Controller
                 'quarter'     => $q,
                 'label'       => $def['label'],
                 'short'       => $def['short'],
-                'assessments' => $assessed,
+                'assessments' => (int) ($agg->assessments ?? 0),
                 'avg_fluency' => $assessed ? (float) $agg->avg_fluency : null,
                 'avg_comp'    => $assessed ? (float) $agg->avg_comp    : null,
                 'meeting'     => (int) ($agg->cnt_meeting    ?? 0),
                 'approaching' => (int) ($agg->cnt_approaching ?? 0),
                 'below'       => (int) ($agg->cnt_below      ?? 0),
                 'pct'         => $pct,
-                'is_current'  => $q === $currentQuarter,
-                'is_past'     => $q < $currentQuarter,
-                'is_future'   => $q > $currentQuarter,
+                'is_current'  => $isCurrentYear && $q === $currentQuarter,
+                'is_past'     => !$isCurrentYear || $q < $currentQuarter,
+                'is_future'   => $isCurrentYear && $q > $currentQuarter,
             ];
         });
 
@@ -113,7 +133,7 @@ class DashboardController extends Controller
         return view('teacher.dashboard', compact(
             'totalStudents', 'meeting', 'approaching', 'below',
             'quarterlyData', 'ytdAssessments', 'year',
-            'studentsNeedingAttention'
+            'studentsNeedingAttention', 'availableYears', 'currentYear', 'isCurrentYear'
         ));
     }
 

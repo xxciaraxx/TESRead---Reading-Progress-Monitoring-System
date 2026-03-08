@@ -9,7 +9,6 @@ class Assessment extends Model
     protected $fillable = [
         'student_id', 'teacher_id',
         'fluency_score', 'comprehension_score',
-        'reading_sessions_per_week',
         'notes', 'risk_level', 'assessed_on',
     ];
 

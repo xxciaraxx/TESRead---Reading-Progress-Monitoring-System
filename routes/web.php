@@ -43,7 +43,10 @@ Route::get('/login', function (Request $request) {
 Route::middleware('guest')->group(function () {
     Route::post('/register', [AuthController::class, 'register']);
     Route::post('/login',    [AuthController::class, 'login']);
-    Route::get('/forgot-password', fn () => view('auth.forgot-password'))->name('password.request');
+    Route::get('/forgot-password',  [\App\Http\Controllers\Auth\PasswordResetController::class, 'showForgotForm'])->name('password.request');
+    Route::post('/forgot-password', [\App\Http\Controllers\Auth\PasswordResetController::class, 'sendResetToken'])->name('password.email');
+    Route::get('/reset-password',   [\App\Http\Controllers\Auth\PasswordResetController::class, 'showResetForm'])->name('password.reset');
+    Route::post('/reset-password',  [\App\Http\Controllers\Auth\PasswordResetController::class, 'resetPassword'])->name('password.update');
 });
 
 Route::middleware('auth')->post('/logout', [AuthController::class, 'logout'])->name('logout');
@@ -54,10 +57,14 @@ Route::prefix('admin')->name('admin.')->middleware(['auth', 'admin'])->group(fun
     Route::get('/dashboard', [AdminDashboardController::class, 'index'])->name('dashboard');
 
     Route::resource('teachers', TeacherController::class);
-    Route::patch('teachers/{teacher}/approve', [TeacherController::class, 'approve'])->name('teachers.approve');
-    Route::patch('teachers/{teacher}/reject',  [TeacherController::class, 'reject'])->name('teachers.reject');
+    Route::patch('teachers/{teacher}/approve',    [TeacherController::class, 'approve'])->name('teachers.approve');
+    Route::patch('teachers/{teacher}/reject',     [TeacherController::class, 'reject'])->name('teachers.reject');
+    Route::patch('teachers/{teacher}/deactivate', [TeacherController::class, 'deactivate'])->name('teachers.deactivate');
+    Route::patch('teachers/{teacher}/reactivate', [TeacherController::class, 'reactivate'])->name('teachers.reactivate');
 
     Route::resource('classes', ClassController::class);
+    Route::patch('classes/{class}/archive',  [ClassController::class, 'archive'])->name('classes.archive');
+    Route::patch('classes/{class}/restore',  [ClassController::class, 'restore'])->name('classes.restore');
 
     Route::resource('students', StudentController::class);
     Route::patch('students/{student}/archive', [StudentController::class, 'archive'])->name('students.archive');
@@ -83,10 +90,14 @@ Route::prefix('teacher')->name('teacher.')->middleware(['auth', 'teacher'])->gro
 
     // Students — full resource
     Route::resource('students', TeacherStudentController::class);
+    Route::patch('students/{student}/archive', [TeacherStudentController::class, 'archive'])->name('students.archive');
+    Route::patch('students/{student}/restore', [TeacherStudentController::class, 'restore'])->name('students.restore');
 
     // Assessments
     Route::resource('assessments', AssessmentController::class)
          ->only(['index', 'create', 'store', 'show']);
+    Route::get('assessments/student/{student}', [AssessmentController::class, 'studentHistory'])
+         ->name('assessments.student-history');
 
     // Interventions
     Route::resource('interventions', InterventionController::class)

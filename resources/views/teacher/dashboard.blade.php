@@ -159,7 +159,14 @@
     <div style="position:relative;z-index:1;">
         <div class="wh-eyebrow"><i class="fas fa-chalkboard-teacher" style="margin-right:5px;"></i> Teacher · Tampugo Elementary School</div>
         <div class="wh-name">Good {{ $greeting }}, <span>{{ Str::words(auth()->user()->name, 1, '') }}!</span></div>
-        <div class="wh-sub">Here's your class reading progress overview for S.Y. {{ $year }}–{{ $year + 1 }}.</div>
+        <div class="wh-sub">
+            Here's your class reading progress overview for S.Y. {{ $year }}–{{ $year + 1 }}.
+            @if(!$isCurrentYear)
+                <span style="margin-left:6px;background:rgba(255,193,7,.25);color:#856404;font-size:10px;font-weight:700;padding:1px 8px;border-radius:99px;">
+                    Past Year
+                </span>
+            @endif
+        </div>
         <div class="wh-badges">
             <div class="wh-badge"><i class="fas fa-user-graduate"></i> {{ $totalStudents }} Student{{ $totalStudents !== 1 ? 's' : '' }}</div>
             <div class="wh-badge"><i class="fas fa-star"></i> {{ $meeting }} Meeting Standard</div>
@@ -173,6 +180,9 @@
     <div class="wh-right">
         <div class="wh-sy-label">School Year</div>
         <div class="wh-sy">{{ $year }}<small>– {{ $year + 1 }}</small></div>
+        @if(!$isCurrentYear)
+            <div style="font-size:9px;font-weight:700;color:rgba(255,193,7,.9);margin-top:2px;letter-spacing:.5px;">PAST YEAR</div>
+        @endif
         <div style="font-size:11px;color:rgba(255,255,255,.40);margin-top:8px;font-weight:500;">
             {{ $phTime->format('l, F j') }}
         </div>
@@ -233,7 +243,23 @@
     <div class="d-card">
         <div class="d-head">
             <div class="d-title"><i class="fas fa-calendar-alt" style="color:var(--primary);"></i> Quarterly Progress</div>
-            <span style="font-size:11px;font-weight:700;background:rgba(0,58,140,.08);color:var(--primary);border-radius:99px;padding:3px 10px;">S.Y. {{ $year }}–{{ $year + 1 }}</span>
+            <div style="display:flex;align-items:center;gap:8px;">
+                @if(!$isCurrentYear)
+                    <span style="font-size:10px;font-weight:700;background:#fff3cd;color:#856404;border:1px solid #ffc107;border-radius:99px;padding:2px 10px;">
+                        <i class="fas fa-history" style="font-size:9px;"></i> Viewing Past Year
+                    </span>
+                @endif
+                <form method="GET" action="{{ route('teacher.dashboard') }}" style="margin:0;">
+                    <select name="sy" onchange="this.form.submit()"
+                        style="font-size:11px;font-weight:700;background:rgba(0,58,140,.08);color:var(--primary);border:1.5px solid rgba(0,58,140,.18);border-radius:99px;padding:3px 12px;cursor:pointer;outline:none;appearance:none;-webkit-appearance:none;padding-right:24px;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='6'%3E%3Cpath d='M0 0l5 6 5-6z' fill='%23003A8C'/%3E%3C/svg%3E");background-repeat:no-repeat;background-position:right 8px center;">
+                        @foreach($availableYears as $sy)
+                            <option value="{{ $sy }}" {{ $sy == $year ? 'selected' : '' }}>
+                                S.Y. {{ $sy }}–{{ $sy + 1 }}
+                            </option>
+                        @endforeach
+                    </select>
+                </form>
+            </div>
         </div>
         <div style="padding:16px 20px;display:flex;flex-direction:column;gap:10px;">
             @foreach($quarterlyData as $q)

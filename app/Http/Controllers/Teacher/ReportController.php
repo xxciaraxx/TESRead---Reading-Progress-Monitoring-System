@@ -45,14 +45,6 @@ class ReportController extends Controller
             ? $this->riskByQuarter($teacherId, $year)
             : $this->riskByMonth($teacherId, $year);
 
-        $sessionsDist = Assessment::where('teacher_id', $teacherId)
-            ->whereYear('assessed_on', $year)
-            ->select('reading_sessions_per_week', DB::raw('count(*) as total'))
-            ->groupBy('reading_sessions_per_week')
-            ->orderBy('reading_sessions_per_week')
-            ->pluck('total', 'reading_sessions_per_week')
-            ->toArray();
-
         $students = Student::active()
             ->where('teacher_id', $teacherId)
             ->with([
@@ -74,8 +66,7 @@ class ReportController extends Controller
         return view('teacher.reports.index', compact(
             'period', 'year', 'availableYears',
             'totalStudents', 'activeInterventions',
-            'riskDistribution', 'trendData', 'riskOverTime',
-            'sessionsDist', 'students'
+            'riskDistribution', 'trendData', 'riskOverTime', 'students'
         ));
     }
 

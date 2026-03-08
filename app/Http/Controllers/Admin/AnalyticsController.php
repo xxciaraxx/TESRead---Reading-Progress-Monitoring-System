@@ -47,17 +47,16 @@ class AnalyticsController extends Controller
             ? $this->riskByQuarter($year)
             : $this->riskByMonth($year);
 
-        $sessionsDist = Assessment::whereYear('assessed_on', $year)
-            ->select('reading_sessions_per_week', DB::raw('count(*) as total'))
-            ->groupBy('reading_sessions_per_week')
-            ->orderBy('reading_sessions_per_week')
-            ->pluck('total', 'reading_sessions_per_week')
-            ->toArray();
-
         $belowStudents = Student::active()
             ->whereHas('latestAssessment', fn($q) => $q->where('risk_level', ReadingRiskService::BELOW))
             ->with(['latestAssessment', 'section', 'teacher'])
             ->take(10)->get();
+
+        $students = Student::active()
+            ->with(['latestAssessment', 'section', 'interventions', 'assessments'])
+            ->orderBy('last_name')
+            ->orderBy('first_name')
+            ->get();
 
         $teacherStats = User::where('role', 'teacher')
             ->where('account_status', 'Approved')
@@ -85,7 +84,7 @@ class AnalyticsController extends Controller
             'period', 'year', 'availableYears',
             'totalStudents', 'totalTeachers', 'totalAssessments', 'activeInterventions',
             'riskDistribution', 'trendData', 'riskOverTime',
-            'sessionsDist', 'belowStudents', 'teacherStats'
+            'belowStudents', 'students', 'teacherStats'
         ));
     }
 

@@ -174,7 +174,7 @@
 
 /* ── Grid layouts ───────────────────────────────────── */
 .g-trend { display:grid; grid-template-columns:3fr 2fr; gap:var(--an-gap); align-items:stretch; }
-.g-three  { display:grid; grid-template-columns:repeat(3,1fr); gap:var(--an-gap); align-items:stretch; }
+.g-three  { display:grid; grid-template-columns:repeat(2,1fr); gap:var(--an-gap); align-items:stretch; }
 .g-two    { display:grid; grid-template-columns:1fr 1fr; gap:var(--an-gap); align-items:stretch; }
 
 /* ── Chart canvas wrapper ───────────────────────────── */
@@ -280,8 +280,7 @@
 }
 @media (max-width:1100px) {
     .kpi-grid { grid-template-columns:repeat(2,1fr); }
-    .g-three  { grid-template-columns:repeat(2,1fr); }
-    .g-three .an-card:last-child { grid-column: 1 / -1; }
+    .g-three  { grid-template-columns:1fr; }
 }
 @media (max-width:900px) {
     .g-trend { grid-template-columns:1fr; }
@@ -313,232 +312,190 @@
 .chart-interp { display: none; }
 
 @media print {
-    @page { size: A4 landscape; margin: 10mm 12mm 12mm 12mm; }
+    @page { size: A4 landscape; margin: 6mm 8mm 6mm 8mm; }
 
-    /* ── Hide all screen UI ── */
-    html, body { overflow: visible !important; height: auto !important; background: #fff !important; }
-    .sidebar, .top-header, .an-toolbar, .page-header { display: none !important; }
-    .main-area  { margin-left: 0 !important; padding: 0 !important; display: block !important; }
-    .page-content { padding: 0 !important; overflow: visible !important; display: block !important; }
-    .an-page { gap: 8px !important; display: block !important; }
+    /* ── Reset everything to Times New Roman, flow layout ── */
+    * {
+        font-family: 'Times New Roman', Times, serif !important;
+        -webkit-print-color-adjust: exact !important;
+        print-color-adjust: exact !important;
+        box-sizing: border-box !important;
+    }
+
+    /* ── Hide screen chrome ── */
+    html, body { overflow:visible !important; height:auto !important; background:#fff !important; }
+    .sidebar, .top-header, .an-toolbar, .page-header { display:none !important; }
+    .main-area    { margin-left:0 !important; padding:0 !important; display:block !important; }
+    .page-content { padding:0 !important; overflow:visible !important; display:block !important; }
+    .an-page      { display:block !important; }
 
     /* ── Show print-only elements ── */
-    .print-header   { display: flex !important; }
-    .print-doc-info { display: block !important; }
-    .print-footer   { display: block !important; }
-    .chart-interp   { display: block !important; }
+    .print-only, .print-hdr2, .print-footer, .chart-interp { display:block !important; }
+    .print-header   { display:flex !important; }
+    .print-doc-info { display:block !important; }
 
-    /* ══════════════════════════════
-       PAGE 1 — Header + KPIs + Charts
-       ══════════════════════════════ */
-
-    /* ── Formal DepEd header ── */
+    /* ── Logo placeholder ── */
+    .print-header-logo-slot {
+        width:58px; height:58px; flex-shrink:0;
+    }
+    .print-header-logo-img {
+        width:58px; height:58px; object-fit:contain; display:block;
+    }
+    .print-header-logo-fallback {
+        display:none; width:58px; height:58px;
+        border:2px dashed #999; border-radius:6px;
+        align-items:center; justify-content:center;
+        font-size:9pt; color:#999; font-weight:bold;
+    }
+    /* ── Formal DepEd header — centered, no logos ── */
     .print-header {
-        align-items: center;
-        gap: 10px;
-        padding: 6px 0 8px;
-        border-bottom: 2.5px solid #003A8C;
-        margin-bottom: 3px;
+        flex-direction:row; align-items:center; justify-content:center;
+        gap:14px; padding:5px 0 7px; border-bottom:2px solid #000;
+        margin-bottom:4px;
     }
-    .print-header-logos  { display: flex; align-items: center; gap: 8px; flex-shrink: 0; }
-    .print-header-logo   { width: 54px; height: 54px; object-fit: contain; }
-    .print-header-center { flex: 1; text-align: center; }
-    .print-header-republic { font-size: 7.5pt; color: #333; }
-    .print-header-dept {
-        font-size: 11pt; font-weight: 800; color: #003A8C;
-        text-transform: uppercase; letter-spacing: .4px; line-height: 1.2;
-    }
-    .print-header-division { font-size: 8.5pt; font-weight: 600; color: #111; margin-top: 1px; }
-    .print-header-school   { font-size: 7.5pt; color: #444; margin-top: 1px; }
+    .print-header-logos  { display:none !important; }
+    .print-header-center { text-align:center; flex:1; }
+    .print-header-republic { font-size:7pt; color:#000; }
+    .print-header-dept     { font-size:10.5pt; font-weight:bold; color:#000; text-transform:uppercase; letter-spacing:.3px; }
+    .print-header-division { font-size:8pt; font-weight:bold; color:#000; margin-top:1px; }
+    .print-header-school   { font-size:7pt; color:#000; margin-top:1px; }
 
-    /* ── Document title ── */
-    .print-doc-info {
-        text-align: center;
-        margin: 5px 0 8px;
-        padding: 5px 0;
-        border-bottom: 2px solid #003A8C;
-    }
-    .print-doc-title { font-size: 11pt; font-weight: 800; color: #003A8C; text-transform: uppercase; letter-spacing: .8px; }
-    .print-doc-sub   { font-size: 8pt; color: #555; margin-top: 2px; }
-    .print-doc-meta  { font-size: 7pt; color: #777; margin-top: 2px; }
+    .print-doc-info  { text-align:center; margin:4px 0 6px; padding:4px 0; border-bottom:1.5px solid #000; }
+    .print-doc-title { font-size:11pt; font-weight:bold; color:#000; text-transform:uppercase; letter-spacing:.6px; }
+    .print-doc-sub   { font-size:8pt; color:#000; margin-top:2px; }
+    .print-doc-meta  { font-size:7pt; color:#000; margin-top:2px; }
 
     /* ── Section labels ── */
-    .sec-label { margin: 5px 0 3px !important; }
-    .sec-label-text { font-size: 7.5pt !important; color: #003A8C !important; font-weight: 800 !important; }
-    .sec-label-line { background: #003A8C !important; opacity: .2; }
+    .sec-label      { margin:4px 0 3px !important; }
+    .sec-label-text { font-size:7.5pt !important; color:#000 !important; font-weight:bold !important; }
+    .sec-label-line { background:#003A8C !important; opacity:.2; }
 
-    /* ── KPI row — all 4 in one line ── */
+    /* ── KPI row — 4 equal columns, compact ── */
     .kpi-grid {
-        display: grid !important;
-        grid-template-columns: repeat(4, 1fr) !important;
-        gap: 7px !important;
-        margin-bottom: 6px !important;
+        display:grid !important;
+        grid-template-columns:repeat(4,1fr) !important;
+        gap:5px !important;
+        margin-bottom:5px !important;
+        break-inside:avoid !important;
+        page-break-inside:avoid !important;
     }
-    .kpi-card {
-        box-shadow: none !important;
-        border: 1px solid #d0d7e8 !important;
-        padding: 8px 10px !important;
-        gap: 8px !important;
-        break-inside: avoid !important;
-    }
-    .kpi-card::after { height: 2px !important; }
-    .kpi-value { font-size: 20pt !important; letter-spacing: -1px !important; }
-    .kpi-label { font-size: 7.5pt !important; }
-    .kpi-note  { font-size: 6.5pt !important; margin-top: 3px !important; padding-top: 3px !important; }
-    .kpi-icon  { width: 34px !important; height: 34px !important; font-size: 14px !important; border-radius: 8px !important; flex-shrink: 0 !important; }
+    .kpi-card      { box-shadow:none !important; border:1px solid #c8d0e0 !important; padding:6px 9px !important; gap:7px !important; break-inside:avoid !important; }
+    .kpi-card::after { height:2px !important; }
+    .kpi-value     { font-size:18pt !important; letter-spacing:-1px !important; }
+    .kpi-label     { font-size:7pt !important; }
+    .kpi-note      { font-size:6pt !important; margin-top:2px !important; padding-top:2px !important; }
+    .kpi-icon      { width:30px !important; height:30px !important; font-size:13px !important; border-radius:7px !important; flex-shrink:0 !important; }
 
-    /* ── Chart grids — landscape gives us ~257mm usable width ── */
+    /* ── Chart grids: flex rows, NO break inside ── */
     .g-trend {
-        display: grid !important;
-        grid-template-columns: 3fr 2fr !important;
-        gap: 8px !important;
-        margin-bottom: 8px !important;
-        break-inside: avoid !important;
-        page-break-inside: avoid !important;
+        display:flex !important;
+        flex-direction:row !important;
+        gap:7px !important;
+        margin-bottom:5px !important;
+        break-inside:avoid !important;
+        page-break-inside:avoid !important;
+        width:100% !important;
     }
     .g-three {
-        display: grid !important;
-        grid-template-columns: repeat(3, 1fr) !important;
-        gap: 8px !important;
-        margin-bottom: 8px !important;
-        break-inside: avoid !important;
-        page-break-inside: avoid !important;
+        display:flex !important;
+        flex-direction:row !important;
+        gap:7px !important;
+        margin-bottom:5px !important;
+        break-inside:avoid !important;
+        page-break-inside:avoid !important;
+        width:100% !important;
     }
-    .g-two {
-        display: grid !important;
-        grid-template-columns: 1fr 1fr !important;
-        gap: 8px !important;
-        margin-bottom: 6px !important;
-    }
+    .g-trend > .an-card:first-child { flex:3 !important; min-width:0 !important; }
+    .g-trend > .an-card:last-child  { flex:2 !important; min-width:0 !important; }
+    .g-three > .an-card             { flex:1 !important; min-width:0 !important; }
 
     /* ── Chart cards ── */
     .an-card {
-        box-shadow: none !important;
-        border: 1px solid #d0d7e8 !important;
-        overflow: visible !important;
-        break-inside: avoid !important;
-        page-break-inside: avoid !important;
+        box-shadow:none !important;
+        border:1px solid #c8d0e0 !important;
+        overflow:visible !important;
+        break-inside:avoid !important;
+        page-break-inside:avoid !important;
     }
-    .an-card-head  { padding: 5px 10px !important; }
-    .an-card-title { font-size: 8pt !important; }
-    .an-card-badge { font-size: 6.5pt !important; padding: 2px 6px !important; }
-    .an-card-body  { padding: 7px 10px 8px !important; }
+    .an-card-head  { padding:4px 9px !important; }
+    .an-card-title { font-size:7.5pt !important; font-weight:bold !important; color:#000 !important; }
+    .an-card-badge { font-size:6pt !important; padding:1px 5px !important; }
+    .an-card-body  { padding:5px 9px 7px !important; display:flex !important; flex-direction:column !important; }
 
-    /* ── Canvas: JS will resize before print; CSS locks the container ── */
+    /* ── Canvas: fixed pixel height set by JS, no overflow ── */
     .chart-wrap {
-        position: relative !important;
-        height: 118px !important;
-        min-height: 0 !important;
-        overflow: hidden !important;
+        position:relative !important;
+        overflow:hidden !important;
+        min-height:0 !important;
+        flex-shrink:0 !important;
     }
-    .g-trend .an-card:first-child .chart-wrap { height: 125px !important; }
-    /* g-three charts — full page 2, use more height */
-    .g-three .an-card .chart-wrap { height: 155px !important; }
-    canvas {
-        width: 100% !important;
-        height: 100% !important;
-        max-height: none !important;
-    }
+    .g-trend .chart-wrap { height:155px !important; }
+    .g-three .chart-wrap { height:160px !important; }
+    canvas { display:block !important; width:100% !important; height:100% !important; }
 
     /* ── Donut layout ── */
-    .donut-layout      { gap: 10px !important; flex-wrap: nowrap !important; }
-    .donut-canvas-wrap { flex: 0 0 95px !important; }
-    .dl-label  { font-size: 7.5pt !important; }
-    .dl-count  { font-size: 10pt !important; }
-    .dl-pct    { font-size: 6.5pt !important; }
-    .dl-bar    { height: 4px !important; }
-    .dl-dot    { width: 8px !important; height: 8px !important; }
+    .donut-layout      { gap:8px !important; flex-wrap:nowrap !important; align-items:center !important; }
+    .donut-canvas-wrap { flex:0 0 80px !important; width:80px !important; height:80px !important; }
+    .dl-label { font-size:7pt !important; }
+    .dl-count { font-size:9.5pt !important; font-weight:bold !important; }
+    .dl-pct   { font-size:6pt !important; }
+    .dl-bar   { height:3px !important; }
 
-    /* ── Interpretation box ── */
+    /* ── Chart interpretation box ── */
     .chart-interp {
-        margin-top: 5px !important;
-        padding: 4px 8px !important;
-        background: #f8faff !important;
-        border-left: 3px solid #003A8C !important;
-        border-radius: 0 4px 4px 0 !important;
-        font-size: 6.5pt !important;
-        color: #334155 !important;
-        line-height: 1.45 !important;
-        -webkit-print-color-adjust: exact; print-color-adjust: exact;
+        margin-top:4px !important;
+        padding:3px 7px !important;
+        background:#f5f7ff !important;
+        border-left:2.5px solid #003A8C !important;
+        font-size:6pt !important;
+        color:#334155 !important;
+        line-height:1.5 !important;
     }
-    .chart-interp strong { color: #003A8C !important; }
+    .chart-interp strong { color:#000 !important; font-weight:bold !important; }
+    .c-legend   { margin-top:3px !important; gap:4px !important; flex-wrap:wrap !important; }
+    .c-leg-item { font-size:6pt !important; }
+    .c-leg-line, .c-leg-dash { width:10px !important; }
+    .info-note  { font-size:5.5pt !important; padding:2px 6px !important; margin-top:3px !important; }
 
-    /* ── Legend ── */
-    .c-legend   { margin-top: 4px !important; gap: 5px !important; flex-wrap: wrap !important; }
-    .c-leg-item { font-size: 6.5pt !important; }
-    .c-leg-line { width: 12px !important; }
-    .c-leg-dash { width: 12px !important; }
-    .info-note  { font-size: 6pt !important; padding: 3px 7px !important; margin-top: 4px !important; }
+    /* ── Page 2 & 3 repeat headers ── */
 
-    /* ══════════════════════════════
-       PAGE 2 — Assessment Breakdown (break-after on .g-trend)
-       PAGE 3 — Tables
-       ══════════════════════════════ */
-    .print-hdr2 { display: block !important; }
-    .print-page2-break {
-        display: block !important;
-        page-break-before: always !important;
-        break-before: page !important;
+    /* page breaks removed — single flowing layout */
+
+    /* ── Tables ── */
+    .dt, .at, .sp-table { width:100% !important; border-collapse:collapse !important; }
+    .dt thead th, .at thead th, .sp-table thead th {
+        font-size:7pt !important; padding:4px 8px !important;
+        background:#e0e0e0 !important; color:#000 !important; font-weight:bold !important;
     }
-
-    /* ── Teacher table ── */
-    .dt, .at { width: 100% !important; border-collapse: collapse !important; }
-    .dt thead th, .at thead th {
-        font-size: 7.5pt !important;
-        padding: 5px 9px !important;
-        background: #eef2ff !important;
-        color: #1e3a6e !important;
-        font-weight: 800 !important;
-        -webkit-print-color-adjust: exact; print-color-adjust: exact;
+    .dt tbody td, .at tbody td, .sp-table tbody td {
+        font-size:7pt !important; padding:4px 8px !important;
+        border-bottom:1px solid #e8edf8 !important;
     }
-    .dt tbody td, .at tbody td { font-size: 8pt !important; padding: 6px 9px !important; }
-    .dt-name { font-size: 8.5pt !important; font-weight: 700 !important; }
-    .dt-sub  { font-size: 6.5pt !important; }
-    .chip    { font-size: 7pt !important; padding: 2px 6px !important; }
-    .s-name  { font-size: 8pt !important; font-weight: 700 !important; }
-    .s-sub   { font-size: 6.5pt !important; }
-    .s-av    { width: 26px !important; height: 26px !important; }
-    .ctag, .rtag { font-size: 7pt !important; padding: 2px 6px !important; }
+    .dt-name, .s-name { font-size:7.5pt !important; font-weight:bold !important; }
+    .dt-sub, .s-sub   { font-size:6pt !important; }
+    .s-av   { width:20px !important; height:20px !important; }
+    .chip, .ctag, .itag, .rtag { font-size:6.5pt !important; padding:1px 5px !important; }
+    .alert-card  { border-left:3px solid #C8102E !important; }
+    .alert-head  { padding:5px 10px !important; }
+    .alert-title { font-size:8.5pt !important; font-weight:bold !important; }
+    .alert-count { font-size:7.5pt !important; }
 
-    /* ── Alert card ── */
-    .alert-card   { border-left: 3px solid #C8102E !important; break-inside: avoid !important; }
-    .alert-head   { padding: 6px 12px !important; }
-    .alert-title  { font-size: 9pt !important; }
-    .alert-count  { font-size: 8pt !important; }
-
-    /* ── Print footer signature ── */
+    /* ── Signature footer ── */
     .print-footer {
-        margin-top: 12px !important;
-        padding-top: 7px !important;
-        border-top: 2px solid #003A8C !important;
-        page-break-inside: avoid !important;
+        margin-top:10px !important; padding-top:6px !important;
+        border-top:2px solid #000 !important;
+        break-inside:avoid !important; page-break-inside:avoid !important;
     }
-    .print-sig-row {
-        display: flex !important;
-        justify-content: space-between !important;
-        gap: 30px !important;
-        margin-bottom: 6px !important;
-    }
-    .print-sig-col { flex: 1 !important; }
-    .print-sig-label { font-size: 7pt !important; color: #666; margin-bottom: 18px; display: block; }
-    .print-sig-line  {
-        border-top: 1px solid #333 !important;
-        padding-top: 3px !important;
-        font-size: 9pt !important;
-        font-weight: 800 !important;
-        color: #003A8C !important;
-    }
-    .print-sig-title-text { font-size: 7pt !important; color: #555; margin-top: 1px; display: block; }
+    .print-sig-row   { display:flex !important; justify-content:space-between !important; gap:24px !important; margin-bottom:5px !important; }
+    .print-sig-col   { flex:1 !important; }
+    .print-sig-label { font-size:6.5pt; color:#000; margin-bottom:16px; display:block; }
+    .print-sig-line  { border-top:1px solid #000 !important; padding-top:3px !important; font-size:8.5pt !important; font-weight:bold !important; color:#000 !important; }
+    .print-sig-title-text { font-size:6.5pt; color:#000; margin-top:1px; display:block; }
     .print-disclaimer {
-        text-align: center !important;
-        margin-top: 8px !important;
-        font-size: 6.5pt !important;
-        color: #999 !important;
-        border-top: 1px solid #e2e8f0 !important;
-        padding-top: 5px !important;
+        text-align:center !important; margin-top:6px !important;
+        font-size:6pt !important; color:#000 !important;
+        border-top:1px solid #999 !important; padding-top:4px !important;
     }
-
-    * { -webkit-print-color-adjust: exact !important; print-color-adjust: exact !important; }
 }</style>
 @endpush
 
@@ -553,23 +510,18 @@
 
 {{-- ══ FORMAL DEPED PRINT HEADER (hidden on screen, shown on print) ══ --}}
 <div class="print-header" style="display:none;">
-    <div class="print-header-logos">
-        <svg class="print-header-logo" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 200">
-            <circle cx="100" cy="100" r="95" fill="#003A8C"/>
-            <circle cx="100" cy="100" r="78" fill="#fff"/>
-            <circle cx="100" cy="100" r="58" fill="#003A8C"/>
-            <circle cx="100" cy="100" r="36" fill="#fff"/>
-            <circle cx="100" cy="100" r="20" fill="#C8102E"/>
-            <line x1="100" y1="5" x2="100" y2="195" stroke="#fff" stroke-width="3" opacity="0.2"/>
-            <line x1="5" y1="100" x2="195" y2="100" stroke="#fff" stroke-width="3" opacity="0.2"/>
-        </svg>
-        <img src="{{ asset('images/logo.jpg') }}" class="print-header-logo" alt="School Logo">
+    <div class="print-header-logo-slot">
+        <img src="{{ asset('images/TES-logo.jpg') }}" class="print-header-logo-img" alt="School Logo"
+             onerror="this.style.display='none';this.nextElementSibling.style.display='flex';">
+        <div class="print-header-logo-fallback">
+            <span>LOGO</span>
+        </div>
     </div>
     <div class="print-header-center">
         <div class="print-header-republic">Republic of the Philippines</div>
         <div class="print-header-dept">Department of Education</div>
         <div class="print-header-division">Schools Division of Ilocos Sur</div>
-        <div class="print-header-school">Tampugo Elementary School &bull; Candon City, Ilocos Sur</div>
+        <div class="print-header-school">Tampugo Elementary School &bull; Borono, Tagudin, Ilocos Sur</div>
     </div>
 </div>
 
@@ -679,7 +631,7 @@
             <span class="an-card-badge">{{ ucfirst($period) }} &middot; {{ $year }}</span>
         </div>
         <div class="an-card-body">
-            <div class="chart-wrap" style="min-height:220px;">
+            <div class="chart-wrap">
                 <canvas id="cTrend"></canvas>
             </div>
             <div class="c-legend">
@@ -740,28 +692,6 @@
     </div>
 </div>
 
-{{-- ════ ASSESSMENT BREAKDOWN — page break lands here ════ --}}
-{{-- Repeat header for page 2 (hidden on screen) --}}
-<div class="print-hdr2" style="display:none;margin-bottom:6px;">
-    <div style="display:flex;align-items:center;gap:10px;padding:5px 0 7px;border-bottom:2px solid #003A8C;">
-        <div style="display:flex;align-items:center;gap:8px;flex-shrink:0;">
-            <svg style="width:44px;height:44px;" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 200">
-                <circle cx="100" cy="100" r="95" fill="#003A8C"/>
-                <circle cx="100" cy="100" r="78" fill="#fff"/>
-                <circle cx="100" cy="100" r="58" fill="#003A8C"/>
-                <circle cx="100" cy="100" r="36" fill="#fff"/>
-                <circle cx="100" cy="100" r="20" fill="#C8102E"/>
-            </svg>
-            <img src="{{ asset('images/logo.jpg') }}" style="width:44px;height:44px;object-fit:contain;" alt="">
-        </div>
-        <div style="flex:1;text-align:center;">
-            <div style="font-size:8pt;color:#333;">Republic of the Philippines — Department of Education</div>
-            <div style="font-size:9pt;font-weight:800;color:#003A8C;">Tampugo Elementary School &bull; Schools Division of Ilocos Sur</div>
-            <div style="font-size:7.5pt;color:#555;font-style:italic;">Reading Progress Monitoring Report — Continued: Assessment Breakdown</div>
-        </div>
-    </div>
-</div>
-
 <div class="sec-label">
     <div class="sec-label-line"></div>
     <span class="sec-label-text"><i class="fas fa-chart-bar"></i> Assessment Breakdown</span>
@@ -776,35 +706,13 @@
             <span class="an-card-badge">{{ ucfirst($period) }}</span>
         </div>
         <div class="an-card-body">
-            <div class="chart-wrap" style="min-height:210px;">
+            <div class="chart-wrap">
                 <canvas id="cRiskBar"></canvas>
             </div>
             <div class="chart-interp">
                 <strong>Interpretation:</strong> Tracks the number of pupils in each risk category per period.
                 An increasing <strong style="color:#0d9448;">Meeting</strong> count over time reflects positive literacy growth.
                 A growing <strong style="color:#C8102E;">Below Standard</strong> bar is an early warning for intervention planning.
-            </div>
-        </div>
-    </div>
-
-    {{-- Sessions/Week --}}
-    <div class="an-card">
-        <div class="an-card-head">
-            <div class="an-card-title"><i class="fas fa-book-reader"></i> Sessions / Week</div>
-            <span class="an-card-badge">{{ $year }}</span>
-        </div>
-        <div class="an-card-body">
-            <div class="chart-wrap" style="min-height:210px;">
-                <canvas id="cSessions"></canvas>
-            </div>
-            <div class="info-note">
-                <i class="fas fa-info-circle"></i>
-                Students with &le;1 session/week are flagged as <strong>Below Standard</strong>.
-            </div>
-            <div class="chart-interp">
-                <strong>Interpretation:</strong> Shows the frequency of reading sessions per week among pupils.
-                Pupils with only 1 or fewer sessions per week are at greater risk of reading difficulties.
-                Higher session frequency generally correlates with improved fluency and comprehension scores.
             </div>
         </div>
     </div>
@@ -816,7 +724,7 @@
             <span class="an-card-badge">{{ ucfirst($period) }}</span>
         </div>
         <div class="an-card-body">
-            <div class="chart-wrap" style="min-height:210px;">
+            <div class="chart-wrap">
                 <canvas id="cVolume"></canvas>
             </div>
             <div class="chart-interp">
@@ -828,27 +736,7 @@
     </div>
 </div>
 
-{{-- ════ TEACHER OVERVIEW ════ --}}
-{{-- Page break is handled automatically by break-after:page on .g-three above --}}
-<div class="print-header" style="display:none;">
-    <div class="print-header-logos">
-        <svg class="print-header-logo" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 200">
-            <circle cx="100" cy="100" r="95" fill="#003A8C"/>
-            <circle cx="100" cy="100" r="78" fill="#fff"/>
-            <circle cx="100" cy="100" r="58" fill="#003A8C"/>
-            <circle cx="100" cy="100" r="36" fill="#fff"/>
-            <circle cx="100" cy="100" r="20" fill="#C8102E"/>
-        </svg>
-        <img src="{{ asset('images/logo.jpg') }}" class="print-header-logo" alt="School Logo">
-    </div>
-    <div class="print-header-center">
-        <div class="print-header-republic">Republic of the Philippines</div>
-        <div class="print-header-dept">Department of Education</div>
-        <div class="print-header-division">Schools Division of Ilocos Sur</div>
-        <div class="print-header-school">Tampugo Elementary School &bull; Candon City, Ilocos Sur &mdash; <em>Continued: Teacher &amp; Student Data</em></div>
-    </div>
-</div>
-<div class="sec-label">
+<div class="sec-label" style="break-before:page; page-break-before:always;">
     <div class="sec-label-line"></div>
     <span class="sec-label-text"><i class="fas fa-chalkboard-teacher"></i> Teacher Overview</span>
     <div class="sec-label-line"></div>
@@ -949,7 +837,6 @@
                     <th>Class</th>
                     <th>Fluency</th>
                     <th>Comprehension</th>
-                    <th>Sessions/wk</th>
                     <th>Last Assessed</th>
                 </tr>
             </thead>
@@ -975,8 +862,7 @@
                     </td>
                     <td><span class="chip chip-r">{{ $la?->fluency_score ?? '—' }}{{ $la ? '%' : '' }}</span></td>
                     <td><span class="chip chip-r">{{ $la?->comprehension_score ?? '—' }}{{ $la ? '%' : '' }}</span></td>
-                    <td><span class="rtag">{{ $la?->reading_sessions_per_week ?? '—' }}/wk</span></td>
-                    <td style="font-size:12px;color:var(--muted);">
+                                        <td style="font-size:12px;color:var(--muted);">
                         {{ $la?->assessed_on?->format('M d, Y') ?? '—' }}
                     </td>
                 </tr>
@@ -1023,11 +909,11 @@ function changePeriod(p) {
 
 /* ── Chart globals ───────────────────────── */
 const B = '#003A8C', R = '#C8102E', G = '#0d9448', A = '#c47d0e';
-const GRID_COLOR = '#f1f5f9';
+const GRID_COLOR = '#aaaaaa';
 
-Chart.defaults.font.family = "'Plus Jakarta Sans', system-ui, sans-serif";
+Chart.defaults.font.family = "'Times New Roman', Times, serif";
 Chart.defaults.font.size   = 11.5;
-Chart.defaults.color       = '#94a3b8';
+Chart.defaults.color       = '#333333';
 
 const TOOLTIP = {
     backgroundColor : '#0f172a',
@@ -1057,9 +943,6 @@ const rL  = @json($riskOverTime['labels']);
 const rBl = @json($riskOverTime['below']);
 const rAp = @json($riskOverTime['approaching']);
 const rMt = @json($riskOverTime['meeting']);
-const sDist = @json($sessionsDist);
-const sK  = Object.keys(sDist).map(Number);
-const sV  = Object.values(sDist).map(Number);
 const dM  = {{ $riskDistribution['meeting'] }};
 const dA  = {{ $riskDistribution['approaching'] }};
 const dB  = {{ $riskDistribution['below'] }};
@@ -1116,7 +999,7 @@ new Chart('cDonut', {
     data: {
         labels: ['Meeting', 'Approaching', 'Below'],
         datasets: [{ data: [dM, dA, dB], backgroundColor: [G, A, R],
-            borderWidth: 4, borderColor: '#fff', hoverOffset: 8 }]
+            borderWidth: 2, borderColor: '#cccccc', hoverOffset: 8 }]
     },
     options: {
         responsive: true, maintainAspectRatio: true, cutout: '72%',
@@ -1151,29 +1034,6 @@ new Chart('cRiskBar', {
     }
 });
 
-/* 4 ── Sessions Horizontal Bar */
-new Chart('cSessions', {
-    type: 'bar',
-    data: {
-        labels: sK.map(k => k + (k === 1 ? ' session' : ' sessions') + '/wk'),
-        datasets: [{
-            label: 'Count', data: sV,
-            backgroundColor: sK.map(k => k <= 1 ? R + 'cc' : B + 'cc'),
-            borderRadius: 5, borderSkipped: false
-        }]
-    },
-    options: {
-        indexAxis: 'y', responsive: true, maintainAspectRatio: false,
-        plugins: {
-            legend: { display: false },
-            tooltip: { ...TOOLTIP, callbacks: { label: c => '  ' + c.raw + ' assessments' } }
-        },
-        scales: {
-            x: { ...SCALE_Y, beginAtZero: true, ticks: { stepSize: 1 } },
-            y: SCALE_X
-        }
-    }
-});
 
 /* 5 ── Assessment Volume */
 new Chart('cVolume', {
@@ -1213,35 +1073,23 @@ const _allCharts = Chart.instances ? Object.values(Chart.instances) : [];
 const _origSizes = new Map();
 
 function resizeChartsForPrint() {
-    document.querySelectorAll('.chart-wrap').forEach(wrap => {
-        // Read the CSS-locked print height (set by @media print)
-        const canvas = wrap.querySelector('canvas');
-        if (!canvas) return;
+    document.querySelectorAll('.g-trend canvas, .g-three canvas').forEach(canvas => {
         const chart = Chart.getChart(canvas);
         if (!chart) return;
-        _origSizes.set(chart.id, { w: canvas.width, h: canvas.height });
-        // Landscape A4 ~257mm wide; chart wraps fill available cols
-        // Force canvas to the wrapper's rendered dimensions
-        chart.resize(canvas.parentElement.offsetWidth, 148);
+        const wrap = canvas.closest('.chart-wrap');
+        const inGThree = !!canvas.closest('.g-three');
+        const h = inGThree ? 160 : 155;
+        const w = wrap ? wrap.offsetWidth : 300;
+        chart.resize(w || 300, h);
         chart.update('none');
     });
-    // Score trend gets slightly taller
-    const trendCanvas = document.getElementById('cTrend');
-    if (trendCanvas) {
-        const c = Chart.getChart(trendCanvas);
-        if (c) { c.resize(trendCanvas.parentElement.offsetWidth, 155); c.update('none'); }
-    }
 }
-
 function restoreChartsAfterPrint() {
-    document.querySelectorAll('.chart-wrap canvas').forEach(canvas => {
+    document.querySelectorAll('canvas').forEach(canvas => {
         const chart = Chart.getChart(canvas);
-        if (!chart) return;
-        chart.resize();   // let Chart.js auto-size back
-        chart.update('none');
+        if (chart) { chart.resize(); chart.update('none'); }
     });
 }
-
 window.addEventListener('beforeprint', resizeChartsForPrint);
 window.addEventListener('afterprint',  restoreChartsAfterPrint);
 </script>

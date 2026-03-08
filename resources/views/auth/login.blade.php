@@ -1,4 +1,3 @@
-{{-- resources/views/auth/login.blade.php --}}
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -7,6 +6,7 @@
     <title>Login - TESRead</title>
     <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700;900&family=Work+Sans:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+    <link rel="icon" type="image/jpg" href="{{ asset('favicon.jpg') }}">
     <style>
         :root {
             --blue:      #003A8C;
@@ -329,16 +329,16 @@
 
                 <div class="feature-list">
                     <div class="feature-item">
-                        <div class="feature-icon">📖</div>
-                        <div class="feature-text">Final Exam — 4th Quarter for S.Y 2025–2026</div>
+                        <div class="feature-icon">📊</div>
+                        <div class="feature-text">Track reading progress and assessments in one place</div>
                     </div>
                     <div class="feature-item">
-                        <div class="feature-icon">🎓</div>
-                        <div class="feature-text">Graduation Day — Grade 6 Students</div>
+                        <div class="feature-icon">🎯</div>
+                        <div class="feature-text">Identify pupils who need early reading intervention</div>
                     </div>
                     <div class="feature-item">
-                        <div class="feature-icon">📚</div>
-                        <div class="feature-text">Daily reading sessions for all grade levels</div>
+                        <div class="feature-icon">📋</div>
+                        <div class="feature-text">Generate organized reports for instructional decisions</div>
                     </div>
                 </div>
             </div>
