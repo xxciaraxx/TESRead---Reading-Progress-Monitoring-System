@@ -13,7 +13,9 @@ class ProfileController extends Controller
 {
     public function edit()
     {
-        return view('teacher.profile.edit', ['user' => auth()->user()]);
+        $user     = auth()->user();
+        $sections = $user->sections()->withCount('students')->orderBy('grade_level')->get();
+        return view('teacher.profile.edit', compact('user', 'sections'));
     }
 
     public function update(Request $request)

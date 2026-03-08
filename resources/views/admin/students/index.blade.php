@@ -4,8 +4,23 @@
 @section('page-icon', '🎓')
 @section('page-heading', 'Students')
 
+@push('styles')
+<style>
+html, body { overflow: hidden !important; height: 100% !important; }
+.main-area   { height: 100vh; overflow: hidden; display: flex; flex-direction: column; }
+.page-content { flex: 1; overflow: hidden; display: flex; flex-direction: column; }
+.adm-stu-layout { display: flex; flex-direction: column; height: 100%; }
+.adm-stu-table-card { flex: 1; min-height: 0; display: flex; flex-direction: column; overflow: hidden; }
+.adm-stu-table-card .table-wrap { flex: 1; overflow-y: auto; overflow-x: auto; }
+.adm-stu-table-card .table-wrap::-webkit-scrollbar { width: 5px; height: 5px; }
+.adm-stu-table-card .table-wrap::-webkit-scrollbar-thumb { background: #d1d9f0; border-radius: 99px; }
+.adm-stu-table-card .data-table thead th { position: sticky; top: 0; z-index: 2; }
+</style>
+@endpush
+
 @section('content')
 
+<div class="adm-stu-layout">
 <div class="page-header">
     <div>
         <h1>{{ $showArchived ? 'Archived Students' : 'Students' }}</h1>
@@ -33,7 +48,7 @@
                    value="{{ request('search') }}">
         </div>
         <select name="section_id" class="form-control" style="width:auto;border-radius:8px;padding:9px 38px 9px 14px;">
-            <option value="">All Sections</option>
+            <option value="">All Classes</option>
             @foreach($sections as $section)
                 <option value="{{ $section->id }}" {{ request('section_id') == $section->id ? 'selected' : '' }}>
                     Grade {{ $section->grade_level }} – {{ $section->name }}
@@ -49,14 +64,14 @@
     </form>
 </div>
 
-<div class="card">
+<div class="card adm-stu-table-card">
     <div class="table-wrap">
         <table class="data-table">
             <thead>
                 <tr>
                     <th>Student</th>
                     <th>LRN</th>
-                    <th>Grade / Section</th>
+                    <th>Grade / Class</th>
                     <th>Reading Level</th>
                     <th>Risk Level</th>
                     <th style="text-align:right;">Actions</th>
@@ -87,11 +102,7 @@
                         @endif
                     </td>
                     <td>
-                        @if($student->readingLevel)
-                            <span class="badge badge-primary">{{ $student->readingLevel->name }}</span>
-                        @else
-                            <span class="text-muted">—</span>
-                        @endif
+                        <span class="badge badge-primary">{{ $student->philIriLabel() }}</span>
                     </td>
                     <td>
                         @if($student->latestAssessment)
@@ -152,4 +163,5 @@
     @endif
 </div>
 
+</div>
 @endsection

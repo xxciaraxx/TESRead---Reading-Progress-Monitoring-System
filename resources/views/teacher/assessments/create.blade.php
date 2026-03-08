@@ -4,8 +4,20 @@
 @section('page-icon', '📊')
 @section('page-heading', 'New Assessment')
 
+
+@push('styles')
+<style>
+html, body { overflow: hidden !important; height: 100% !important; }
+.main-area   { height: 100vh; overflow: hidden; display: flex; flex-direction: column; }
+.page-content { flex: 1; overflow: hidden; display: flex; flex-direction: column; }
+.scroll-body { flex: 1; min-height: 0; overflow-y: auto; overflow-x: hidden; padding-bottom: 20px; }
+.scroll-body::-webkit-scrollbar { width: 5px; }
+.scroll-body::-webkit-scrollbar-thumb { background: #d1d9f0; border-radius: 99px; }
+</style>
+@endpush
 @section('content')
 
+<div style="display:flex;flex-direction:column;height:100%;">
 <div class="page-header">
     <div><h1>Record Reading Assessment</h1></div>
     <a href="{{ route('teacher.assessments.index') }}" class="btn btn-outline">
@@ -13,6 +25,7 @@
     </a>
 </div>
 
+<div class="scroll-body">
 {{-- Risk Level Reference --}}
 <div class="card" style="margin-bottom:20px;padding:16px 20px;">
     <div style="display:flex;gap:16px;flex-wrap:wrap;">
@@ -130,6 +143,8 @@
     </div>
 </div>
 
+</div>
+</div>
 @endsection
 
 @push('scripts')

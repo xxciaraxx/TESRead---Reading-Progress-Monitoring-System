@@ -45,7 +45,7 @@ class InterventionController extends Controller
     public function show(Intervention $intervention)
     {
         abort_if($intervention->teacher_id !== auth()->id(), 403);
-        $intervention->load(['student', 'assessment.readingLevel']);
+        $intervention->load(['student', 'assessment']);
         return view('teacher.interventions.show', compact('intervention'));
     }
 

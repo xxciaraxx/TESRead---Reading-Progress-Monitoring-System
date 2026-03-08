@@ -5,6 +5,7 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
+use Illuminate\Support\Facades\Storage;
 
 class User extends Authenticatable
 {
@@ -36,17 +37,17 @@ class User extends Authenticatable
     /* ── Profile photo URL ── */
     public function profilePhotoUrl(): string
     {
-        if ($this->profile_photo && file_exists(storage_path('app/public/' . $this->profile_photo))) {
+        if ($this->profile_photo && Storage::disk('public')->exists($this->profile_photo)) {
             return asset('storage/' . $this->profile_photo);
         }
-        $initials = urlencode(substr($this->name, 0, 2));
-        return "https://ui-avatars.com/api/?name={$initials}&background=003A8C&color=fff&size=128";
+        $name = urlencode($this->name);
+        return "https://ui-avatars.com/api/?name={$name}&background=003A8C&color=fff&size=128&bold=true";
     }
 
     /* ── Relationships ── */
     public function sections()
     {
-        return $this->hasMany(Section::class, 'teacher_id');
+        return $this->hasMany(SchoolClass::class, 'teacher_id');
     }
 
     public function students()

@@ -5,8 +5,7 @@ use App\Http\Controllers\Auth\AuthController;
 use App\Http\Controllers\Admin\ActivityLogController;
 use App\Http\Controllers\Admin\AdminDashboardController;
 use App\Http\Controllers\Admin\AnalyticsController;
-use App\Http\Controllers\Admin\ReadingLevelController;
-use App\Http\Controllers\Admin\SectionController;
+use App\Http\Controllers\Admin\ClassController;
 use App\Http\Controllers\Admin\StudentController;
 use App\Http\Controllers\Admin\TeacherController;
 use App\Http\Controllers\Teacher\DashboardController;
@@ -15,14 +14,34 @@ use App\Http\Controllers\Teacher\AssessmentController;
 use App\Http\Controllers\Teacher\InterventionController;
 use App\Http\Controllers\Teacher\ReportController;
 use App\Http\Controllers\Teacher\StudentController as TeacherStudentController;
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 
-Route::get('/', fn () => redirect()->route('login'));
+Route::get('/', fn () => view('auth.landing'))->name('landing');
 
 /*── Guest ───────────────────────────────────────────────*/
+Route::get('/register', function (Request $request) {
+    if (Auth::check()) {
+        Auth::logout();
+        $request->session()->invalidate();
+        $request->session()->regenerateToken();
+    }
+
+    return app(AuthController::class)->showRegisterForm();
+})->name('register');
+
+Route::get('/login', function (Request $request) {
+    if (Auth::check()) {
+        Auth::logout();
+        $request->session()->invalidate();
+        $request->session()->regenerateToken();
+    }
+
+    return app(AuthController::class)->showLoginForm();
+})->name('login');
+
 Route::middleware('guest')->group(function () {
-    Route::get('/register',  [AuthController::class, 'showRegisterForm'])->name('register');
     Route::post('/register', [AuthController::class, 'register']);
-    Route::get('/login',     [AuthController::class, 'showLoginForm'])->name('login');
     Route::post('/login',    [AuthController::class, 'login']);
     Route::get('/forgot-password', fn () => view('auth.forgot-password'))->name('password.request');
 });
@@ -38,13 +57,11 @@ Route::prefix('admin')->name('admin.')->middleware(['auth', 'admin'])->group(fun
     Route::patch('teachers/{teacher}/approve', [TeacherController::class, 'approve'])->name('teachers.approve');
     Route::patch('teachers/{teacher}/reject',  [TeacherController::class, 'reject'])->name('teachers.reject');
 
-    Route::resource('sections', SectionController::class);
+    Route::resource('classes', ClassController::class);
 
     Route::resource('students', StudentController::class);
     Route::patch('students/{student}/archive', [StudentController::class, 'archive'])->name('students.archive');
     Route::patch('students/{student}/restore', [StudentController::class, 'restore'])->name('students.restore');
-
-    Route::resource('reading-levels', ReadingLevelController::class);
 
     Route::get('activity-logs', [ActivityLogController::class, 'index'])->name('activity-logs.index');
 

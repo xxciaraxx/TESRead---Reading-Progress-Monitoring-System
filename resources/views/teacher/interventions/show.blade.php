@@ -4,8 +4,20 @@
 @section('page-icon', '🤝')
 @section('page-heading', 'Intervention Detail')
 
+
+@push('styles')
+<style>
+html, body { overflow: hidden !important; height: 100% !important; }
+.main-area   { height: 100vh; overflow: hidden; display: flex; flex-direction: column; }
+.page-content { flex: 1; overflow: hidden; display: flex; flex-direction: column; }
+.scroll-body { flex: 1; min-height: 0; overflow-y: auto; overflow-x: hidden; padding-bottom: 20px; }
+.scroll-body::-webkit-scrollbar { width: 5px; }
+.scroll-body::-webkit-scrollbar-thumb { background: #d1d9f0; border-radius: 99px; }
+</style>
+@endpush
 @section('content')
 
+<div style="display:flex;flex-direction:column;height:100%;">
 <div class="page-header">
     <div>
         <h1>Intervention Record</h1>
@@ -21,6 +33,7 @@
     </div>
 </div>
 
+<div class="scroll-body">
 <div class="grid-2" style="gap:22px;align-items:start;">
 
     {{-- Left: Student info + Assessment context --}}
@@ -58,11 +71,9 @@
                             – {{ $intervention->student->section->name }}
                         </span>
                     @endif
-                    @if($intervention->student?->readingLevel)
-                        <span class="badge badge-primary" style="margin-left:4px;">
-                            {{ $intervention->student->readingLevel->name }}
-                        </span>
-                    @endif
+                    <span class="badge badge-primary" style="margin-left:4px;">
+                        {{ $intervention->student?->philIriLabel() }}
+                    </span>
                 </div>
             </div>
             <div style="padding:14px 20px;border-top:1px solid var(--border);
@@ -275,6 +286,8 @@
     </div>
 </div>
 
+</div>
+</div>
 @endsection
 
 @push('scripts')

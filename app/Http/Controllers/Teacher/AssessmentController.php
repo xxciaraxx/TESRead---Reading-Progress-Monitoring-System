@@ -15,7 +15,7 @@ class AssessmentController extends Controller
 
     public function index()
     {
-        $assessments = Assessment::with(['student', 'readingLevel'])
+        $assessments = Assessment::with(['student'])
             ->where('teacher_id', auth()->id())
             ->latest('assessed_on')
             ->paginate(20);
@@ -41,7 +41,6 @@ class AssessmentController extends Controller
     {
         $data = $request->validate([
             'student_id'                 => 'required|exists:students,id',
-            'reading_level_id'           => 'nullable|exists:reading_levels,id',
             'fluency_score'              => 'required|numeric|min:0|max:100',
             'comprehension_score'        => 'required|numeric|min:0|max:100',
             'reading_sessions_per_week'  => 'required|integer|min:0|max:7',
@@ -68,7 +67,7 @@ class AssessmentController extends Controller
     public function show(Assessment $assessment)
     {
         abort_if($assessment->teacher_id !== auth()->id(), 403);
-        $assessment->load(['student', 'readingLevel', 'intervention']);
+        $assessment->load(['student', 'intervention']);
         return view('teacher.assessments.show', compact('assessment'));
     }
 }

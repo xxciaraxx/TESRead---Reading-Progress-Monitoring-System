@@ -5,7 +5,6 @@ namespace App\Http\Controllers\Teacher;
 use App\Http\Controllers\Controller;
 use App\Models\Student;
 use App\Models\Section;
-use App\Models\ReadingLevel;
 use App\Models\ActivityLog;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
@@ -14,7 +13,7 @@ class StudentController extends Controller
 {
     public function index(Request $request)
     {
-        $query = Student::with(['section', 'readingLevel', 'latestAssessment'])
+        $query = Student::with(['section', 'latestAssessment'])
             ->where('teacher_id', auth()->id())
             ->active();
 
@@ -38,10 +37,9 @@ class StudentController extends Controller
 
     public function create()
     {
-        $sections      = Section::where('is_active', true)->get();
-        $readingLevels = ReadingLevel::where('is_active', true)->orderBy('grade_level')->get();
+        $sections = Section::where('is_active', true)->get();
 
-        return view('teacher.students.create', compact('sections', 'readingLevels'));
+        return view('teacher.students.create', compact('sections'));
     }
 
     public function store(Request $request)
@@ -54,7 +52,6 @@ class StudentController extends Controller
             'gender'           => 'nullable|in:Male,Female',
             'birthdate'        => 'nullable|date|before:today',
             'section_id'       => 'nullable|exists:sections,id',
-            'reading_level_id' => 'nullable|exists:reading_levels,id',
             'profile_photo'    => 'nullable|image|mimes:jpg,jpeg,png|max:2048',
         ]);
 
@@ -76,9 +73,8 @@ class StudentController extends Controller
         abort_if($student->teacher_id !== auth()->id(), 403);
 
         $student->load([
-            'section', 'readingLevel',
+            'section',
             'assessments' => fn($q) => $q->latest('assessed_on')->take(10),
-            'assessments.readingLevel',
             'interventions' => fn($q) => $q->latest(),
         ]);
 
@@ -89,10 +85,9 @@ class StudentController extends Controller
     {
         abort_if($student->teacher_id !== auth()->id(), 403);
 
-        $sections      = Section::where('is_active', true)->get();
-        $readingLevels = ReadingLevel::where('is_active', true)->orderBy('grade_level')->get();
+        $sections = Section::where('is_active', true)->get();
 
-        return view('teacher.students.edit', compact('student', 'sections', 'readingLevels'));
+        return view('teacher.students.edit', compact('student', 'sections'));
     }
 
     public function update(Request $request, Student $student)
@@ -107,7 +102,6 @@ class StudentController extends Controller
             'gender'           => 'nullable|in:Male,Female',
             'birthdate'        => 'nullable|date|before:today',
             'section_id'       => 'nullable|exists:sections,id',
-            'reading_level_id' => 'nullable|exists:reading_levels,id',
             'profile_photo'    => 'nullable|image|mimes:jpg,jpeg,png|max:2048',
         ]);
 

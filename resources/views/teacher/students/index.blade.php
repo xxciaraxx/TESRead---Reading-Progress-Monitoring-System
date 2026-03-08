@@ -4,8 +4,25 @@
 @section('page-icon', '🎓')
 @section('page-heading', 'My Students')
 
+@push('styles')
+<style>
+html, body { overflow: hidden !important; height: 100% !important; }
+.main-area  { height: 100vh; overflow: hidden; display: flex; flex-direction: column; }
+.page-content { flex: 1; overflow: hidden !important; display: flex; flex-direction: column; padding-bottom: 0 !important; }
+
+/* The table card stretches and its inner table-wrap scrolls */
+.students-layout { display: flex; flex-direction: column; height: 100%; gap: 0; }
+.students-table-card { flex: 1; min-height: 0; display: flex; flex-direction: column; overflow: hidden; }
+.students-table-card .table-wrap { flex: 1; overflow-y: auto; overflow-x: auto; }
+.students-table-card .table-wrap::-webkit-scrollbar { width: 5px; height: 5px; }
+.students-table-card .table-wrap::-webkit-scrollbar-thumb { background: #d1d9f0; border-radius: 99px; }
+.students-table-card .data-table thead th { position: sticky; top: 0; z-index: 2; }
+</style>
+@endpush
+
 @section('content')
 
+<div class="students-layout">
 <div class="page-header">
     <div>
         <h1>My Students</h1>
@@ -63,7 +80,7 @@
 
         <select name="section_id" class="form-control"
                 style="width:auto;border-radius:8px;padding:9px 38px 9px 14px;">
-            <option value="">All Sections</option>
+            <option value="">All Classes</option>
             @foreach($sections as $section)
                 <option value="{{ $section->id }}"
                     {{ request('section_id') == $section->id ? 'selected' : '' }}>
@@ -85,13 +102,13 @@
 </div>
 
 {{-- Table --}}
-<div class="card">
+<div class="card students-table-card">
     <div class="table-wrap">
         <table class="data-table">
             <thead>
                 <tr>
                     <th>Student</th>
-                    <th>Section</th>
+                    <th>Class</th>
                     <th>Reading Level</th>
                     <th>Latest Risk</th>
                     <th>Last Assessed</th>
@@ -125,11 +142,7 @@
                         @endif
                     </td>
                     <td>
-                        @if($student->readingLevel)
-                            <span class="badge badge-primary">{{ $student->readingLevel->name }}</span>
-                        @else
-                            <span class="text-muted">Not set</span>
-                        @endif
+                        <span class="badge badge-primary">{{ $student->philIriLabel() }}</span>
                     </td>
                     <td>
                         @if($student->latestAssessment && $student->latestAssessment->risk_level)
@@ -219,4 +232,5 @@
     @endif
 </div>
 
+</div>
 @endsection

@@ -1,14 +1,26 @@
 @extends('layouts.teacher')
 
-@section('title', 'Edit Student')
+@section('title', 'Update Student Profile')
 @section('page-icon', '✏️')
-@section('page-heading', 'Edit Student')
+@section('page-heading', 'Update Student Profile')
 
+
+@push('styles')
+<style>
+html, body { overflow: hidden !important; height: 100% !important; }
+.main-area   { height: 100vh; overflow: hidden; display: flex; flex-direction: column; }
+.page-content { flex: 1; overflow: hidden; display: flex; flex-direction: column; }
+.scroll-body { flex: 1; min-height: 0; overflow-y: auto; overflow-x: hidden; padding-bottom: 20px; }
+.scroll-body::-webkit-scrollbar { width: 5px; }
+.scroll-body::-webkit-scrollbar-thumb { background: #d1d9f0; border-radius: 99px; }
+</style>
+@endpush
 @section('content')
 
+<div style="display:flex;flex-direction:column;height:100%;">
 <div class="page-header">
     <div>
-        <h1>Edit Student</h1>
+        <h1>Manage Students' Profile</h1>
         <div class="page-subtitle">Update {{ $student->fullName() }}'s information</div>
     </div>
     <div style="display:flex;gap:10px;">
@@ -21,6 +33,7 @@
     </div>
 </div>
 
+<div class="scroll-body">
 <div style="max-width:760px;">
     <div class="card">
         <div class="card-header">
@@ -108,9 +121,9 @@
                     </div>
 
                     <div class="form-group">
-                        <label class="form-label">Section / Class</label>
+                        <label class="form-label">Class</label>
                         <select name="section_id" class="form-control">
-                            <option value="">— No section —</option>
+                            <option value="">— No class —</option>
                             @foreach($sections as $section)
                                 <option value="{{ $section->id }}"
                                     {{ old('section_id', $student->section_id) == $section->id ? 'selected' : '' }}>
@@ -121,18 +134,7 @@
                         </select>
                     </div>
 
-                    <div class="form-group">
-                        <label class="form-label">Reading Level</label>
-                        <select name="reading_level_id" class="form-control">
-                            <option value="">— Not set —</option>
-                            @foreach($readingLevels as $level)
-                                <option value="{{ $level->id }}"
-                                    {{ old('reading_level_id', $student->reading_level_id) == $level->id ? 'selected' : '' }}>
-                                    Grade {{ $level->grade_level }} – {{ $level->name }}
-                                </option>
-                            @endforeach
-                        </select>
-                    </div>
+                    
                 </div>
 
                 {{-- Danger zone --}}
@@ -166,6 +168,8 @@
     </div>
 </div>
 
+</div>
+</div>
 @endsection
 
 @push('scripts')

@@ -93,9 +93,9 @@
                     </div>
 
                     <div class="form-group">
-                        <label class="form-label">Section / Class</label>
+                        <label class="form-label">Class</label>
                         <select name="section_id" class="form-control">
-                            <option value="">— No section —</option>
+                            <option value="">— No class —</option>
                             @foreach($sections as $section)
                                 <option value="{{ $section->id }}"
                                     {{ old('section_id') == $section->id ? 'selected' : '' }}>
@@ -106,18 +106,7 @@
                         </select>
                     </div>
 
-                    <div class="form-group">
-                        <label class="form-label">Reading Level</label>
-                        <select name="reading_level_id" class="form-control">
-                            <option value="">— Not set —</option>
-                            @foreach($readingLevels as $level)
-                                <option value="{{ $level->id }}"
-                                    {{ old('reading_level_id') == $level->id ? 'selected' : '' }}>
-                                    Grade {{ $level->grade_level }} – {{ $level->name }}
-                                </option>
-                            @endforeach
-                        </select>
-                    </div>
+                    
                 </div>
 
                 <div style="display:flex;gap:12px;justify-content:flex-end;padding-top:8px;border-top:1px solid var(--border);margin-top:8px;">

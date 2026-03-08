@@ -4,8 +4,7 @@ namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
 use App\Models\Student;
-use App\Models\Section;
-use App\Models\ReadingLevel;
+use App\Models\SchoolClass;
 use App\Models\User;
 use App\Models\ActivityLog;
 use Illuminate\Http\Request;
@@ -15,7 +14,7 @@ class StudentController extends Controller
 {
     public function index(Request $request)
     {
-        $query = Student::with(['section', 'teacher', 'readingLevel', 'latestAssessment'])
+        $query = Student::with(['section', 'teacher', 'latestAssessment'])
             ->active();
 
         if ($request->filled('search')) {
@@ -37,7 +36,7 @@ class StudentController extends Controller
         }
 
         $students      = $query->latest()->paginate(20)->withQueryString();
-        $sections      = Section::where('is_active', true)->get();
+        $sections      = SchoolClass::where('is_active', true)->get();
         $showArchived  = $request->boolean('archived');
 
         return view('admin.students.index', compact('students', 'sections', 'showArchived'));
@@ -45,11 +44,10 @@ class StudentController extends Controller
 
     public function create()
     {
-        $sections      = Section::where('is_active', true)->get();
-        $readingLevels = ReadingLevel::where('is_active', true)->get();
+        $sections      = SchoolClass::where('is_active', true)->get();
         $teachers      = User::where('role', 'teacher')->where('account_status', 'Approved')->get();
 
-        return view('admin.students.create', compact('sections', 'readingLevels', 'teachers'));
+        return view('admin.students.create', compact('sections', 'teachers'));
     }
 
     public function store(Request $request)
@@ -63,7 +61,6 @@ class StudentController extends Controller
             'birthdate'        => 'nullable|date',
             'section_id'       => 'nullable|exists:sections,id',
             'teacher_id'       => 'nullable|exists:users,id',
-            'reading_level_id' => 'nullable|exists:reading_levels,id',
             'profile_photo'    => 'nullable|image|mimes:jpg,jpeg,png|max:2048',
         ]);
 
@@ -81,17 +78,16 @@ class StudentController extends Controller
 
     public function show(Student $student)
     {
-        $student->load(['section', 'teacher', 'readingLevel', 'assessments.readingLevel', 'interventions']);
+        $student->load(['section', 'teacher', 'interventions']);
         return view('admin.students.show', compact('student'));
     }
 
     public function edit(Student $student)
     {
-        $sections      = Section::where('is_active', true)->get();
-        $readingLevels = ReadingLevel::where('is_active', true)->get();
+        $sections      = SchoolClass::where('is_active', true)->get();
         $teachers      = User::where('role', 'teacher')->where('account_status', 'Approved')->get();
 
-        return view('admin.students.edit', compact('student', 'sections', 'readingLevels', 'teachers'));
+        return view('admin.students.edit', compact('student', 'sections', 'teachers'));
     }
 
     public function update(Request $request, Student $student)
@@ -105,7 +101,6 @@ class StudentController extends Controller
             'birthdate'        => 'nullable|date',
             'section_id'       => 'nullable|exists:sections,id',
             'teacher_id'       => 'nullable|exists:users,id',
-            'reading_level_id' => 'nullable|exists:reading_levels,id',
             'profile_photo'    => 'nullable|image|mimes:jpg,jpeg,png|max:2048',
         ]);
 
@@ -120,8 +115,8 @@ class StudentController extends Controller
         $student->update($data);
         ActivityLog::log('Updated student', "Student: {$student->fullName()}");
 
-        return redirect()->route('admin.students.index')
-            ->with('success', "Student '{$student->fullName()}' updated.");
+        return redirect()->route('admin.students.show', $student)
+            ->with('success', "Student profile for '{$student->fullName()}' has been updated successfully.");
     }
 
     public function destroy(Student $student)

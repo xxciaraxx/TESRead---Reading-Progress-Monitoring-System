@@ -84,9 +84,9 @@
                     </div>
 
                     <div class="form-group">
-                        <label class="form-label">Assign to Section</label>
+                        <label class="form-label">Assign to Class</label>
                         <select name="section_id" class="form-control">
-                            <option value="">No section</option>
+                            <option value="">No class</option>
                             @foreach($sections as $section)
                                 <option value="{{ $section->id }}" {{ old('section_id') == $section->id ? 'selected' : '' }}>
                                     Grade {{ $section->grade_level }} – {{ $section->name }} ({{ $section->school_year }})
@@ -107,17 +107,7 @@
                         </select>
                     </div>
 
-                    <div class="form-group" style="grid-column:span 2;">
-                        <label class="form-label">Reading Level</label>
-                        <select name="reading_level_id" class="form-control">
-                            <option value="">Not set</option>
-                            @foreach($readingLevels as $level)
-                                <option value="{{ $level->id }}" {{ old('reading_level_id') == $level->id ? 'selected' : '' }}>
-                                    Grade {{ $level->grade_level }} – {{ $level->name }}
-                                </option>
-                            @endforeach
-                        </select>
-                    </div>
+                    
                 </div>
 
                 <div style="display:flex;gap:12px;justify-content:flex-end;padding-top:8px;">

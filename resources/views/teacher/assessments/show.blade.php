@@ -4,8 +4,20 @@
 @section('page-icon', '📊')
 @section('page-heading', 'Assessment Result')
 
+
+@push('styles')
+<style>
+html, body { overflow: hidden !important; height: 100% !important; }
+.main-area   { height: 100vh; overflow: hidden; display: flex; flex-direction: column; }
+.page-content { flex: 1; overflow: hidden; display: flex; flex-direction: column; }
+.scroll-body { flex: 1; min-height: 0; overflow-y: auto; overflow-x: hidden; padding-bottom: 20px; }
+.scroll-body::-webkit-scrollbar { width: 5px; }
+.scroll-body::-webkit-scrollbar-thumb { background: #d1d9f0; border-radius: 99px; }
+</style>
+@endpush
 @section('content')
 
+<div style="display:flex;flex-direction:column;height:100%;">
 <div class="page-header">
     <div><h1>Assessment Result</h1></div>
     <div class="d-flex gap-12">
@@ -19,6 +31,7 @@
     </div>
 </div>
 
+<div class="scroll-body">
 <div style="max-width:760px;">
 
     {{-- Risk Level Hero --}}
@@ -65,13 +78,11 @@
                 <div>
                     <div class="font-bold" style="font-size:16px;">{{ $assessment->student?->fullName() }}</div>
                     <div class="text-muted text-small">
-                        {{ $assessment->student?->section?->name ?? 'No section' }}
+                        {{ $assessment->student?->section?->name ?? 'No class' }}
                     </div>
-                    @if($assessment->readingLevel)
-                        <span class="badge badge-primary" style="margin-top:6px;">
-                            {{ $assessment->readingLevel->name }}
+                    <span class="badge badge-primary" style="margin-top:6px;">
+                            {{ $assessment->philIriLabel() }}
                         </span>
-                    @endif
                 </div>
             </div>
         </div>
@@ -151,4 +162,6 @@
     </div>
 </div>
 
+</div>
+</div>
 @endsection

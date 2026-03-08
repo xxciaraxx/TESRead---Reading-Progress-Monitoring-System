@@ -4,8 +4,23 @@
 @section('page-icon', '🤝')
 @section('page-heading', 'Interventions')
 
+@push('styles')
+<style>
+html, body { overflow: hidden !important; height: 100% !important; }
+.main-area  { height: 100vh; overflow: hidden; display: flex; flex-direction: column; }
+.page-content { flex: 1; overflow: hidden !important; display: flex; flex-direction: column; padding-bottom: 0 !important; }
+
+.interventions-layout { display: flex; flex-direction: column; height: 100%; }
+.interventions-table-card { flex: 1; min-height: 0; display: flex; flex-direction: column; overflow: hidden; }
+.interventions-table-card .table-wrap { flex: 1; overflow-y: auto; overflow-x: auto; }
+.interventions-table-card .table-wrap::-webkit-scrollbar { width: 5px; height: 5px; }
+.interventions-table-card .table-wrap::-webkit-scrollbar-thumb { background: #d1d9f0; border-radius: 99px; }
+</style>
+@endpush
+
 @section('content')
 
+<div class="interventions-layout">
 <div class="page-header">
     <div>
         <h1>Interventions</h1>
@@ -72,7 +87,7 @@
 </div>
 
 {{-- Interventions Table --}}
-<div class="card">
+<div class="card interventions-table-card">
     <div class="table-wrap">
         <table class="data-table">
             <thead>
@@ -192,4 +207,5 @@
     @endif
 </div>
 
+</div>
 @endsection

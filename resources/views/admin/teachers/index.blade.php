@@ -4,8 +4,23 @@
 @section('page-icon', '👨‍🏫')
 @section('page-heading', 'Teacher Accounts')
 
+@push('styles')
+<style>
+html, body { overflow: hidden !important; height: 100% !important; }
+.main-area   { height: 100vh; overflow: hidden; display: flex; flex-direction: column; }
+.page-content { flex: 1; overflow: hidden; display: flex; flex-direction: column; }
+.adm-tch-layout { display: flex; flex-direction: column; height: 100%; }
+.adm-tch-table-card { flex: 1; min-height: 0; display: flex; flex-direction: column; overflow: hidden; }
+.adm-tch-table-card .table-wrap { flex: 1; overflow-y: auto; overflow-x: auto; }
+.adm-tch-table-card .table-wrap::-webkit-scrollbar { width: 5px; height: 5px; }
+.adm-tch-table-card .table-wrap::-webkit-scrollbar-thumb { background: #d1d9f0; border-radius: 99px; }
+.adm-tch-table-card .data-table thead th { position: sticky; top: 0; z-index: 2; }
+</style>
+@endpush
+
 @section('content')
 
+<div class="adm-tch-layout">
 <div class="page-header">
     <div>
         <h1>Teacher Accounts</h1>
@@ -44,7 +59,7 @@
 </div>
 
 {{-- Table --}}
-<div class="card">
+<div class="card adm-tch-table-card">
     <div class="table-wrap">
         <table class="data-table">
             <thead>
@@ -141,4 +156,5 @@
     @endif
 </div>
 
+</div>
 @endsection

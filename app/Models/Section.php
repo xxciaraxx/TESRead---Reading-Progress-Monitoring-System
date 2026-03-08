@@ -2,21 +2,18 @@
 
 namespace App\Models;
 
-use Illuminate\Database\Eloquent\Model;
-
-class Section extends Model
+/**
+ * Section is kept as a class alias for SchoolClass.
+ *
+ * The database table is still named "sections", and Laravel's autoloader
+ * previously cached this file. Rather than requiring `composer dump-autoload`
+ * on every developer machine, this alias makes both class names work
+ * transparently — so any code that still references App\Models\Section
+ * will resolve to SchoolClass without errors.
+ *
+ * DO NOT add logic here — put everything in SchoolClass.php.
+ */
+class Section extends SchoolClass
 {
-    protected $fillable = ['name', 'grade_level', 'school_year', 'teacher_id', 'is_active'];
-
-    protected $casts = ['is_active' => 'boolean'];
-
-    public function teacher()
-    {
-        return $this->belongsTo(User::class, 'teacher_id');
-    }
-
-    public function students()
-    {
-        return $this->hasMany(Student::class);
-    }
+    // Intentionally empty — this is a pure alias.
 }

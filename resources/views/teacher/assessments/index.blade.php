@@ -4,8 +4,23 @@
 @section('page-icon', '📊')
 @section('page-heading', 'Assessments')
 
+@push('styles')
+<style>
+html, body { overflow: hidden !important; height: 100% !important; }
+.main-area  { height: 100vh; overflow: hidden; display: flex; flex-direction: column; }
+.page-content { flex: 1; overflow: hidden !important; display: flex; flex-direction: column; padding-bottom: 0 !important; }
+
+.assessments-layout { display: flex; flex-direction: column; height: 100%; }
+.assessments-table-card { flex: 1; min-height: 0; display: flex; flex-direction: column; overflow: hidden; }
+.assessments-table-card .table-wrap { flex: 1; overflow-y: auto; overflow-x: auto; }
+.assessments-table-card .table-wrap::-webkit-scrollbar { width: 5px; height: 5px; }
+.assessments-table-card .table-wrap::-webkit-scrollbar-thumb { background: #d1d9f0; border-radius: 99px; }
+</style>
+@endpush
+
 @section('content')
 
+<div class="assessments-layout">
 <div class="page-header">
     <div><h1>Reading Assessments</h1></div>
     <a href="{{ route('teacher.assessments.create') }}" class="btn btn-primary">
@@ -13,7 +28,7 @@
     </a>
 </div>
 
-<div class="card">
+<div class="card assessments-table-card">
     <div class="table-wrap">
         <table class="data-table">
             <thead>
@@ -92,4 +107,5 @@
     @endif
 </div>
 
+</div>
 @endsection

@@ -7,47 +7,40 @@ use Illuminate\Database\Eloquent\Model;
 class Assessment extends Model
 {
     protected $fillable = [
-        'student_id', 'teacher_id', 'reading_level_id',
+        'student_id', 'teacher_id',
         'fluency_score', 'comprehension_score',
-        'reading_sessions_per_week', 'notes',
-        'risk_level', 'assessed_on',
+        'reading_sessions_per_week',
+        'notes', 'risk_level', 'assessed_on',
     ];
 
     protected $casts = [
-        'assessed_on'              => 'date',
-        'fluency_score'            => 'decimal:2',
-        'comprehension_score'      => 'decimal:2',
+        'assessed_on'         => 'date',
+        'fluency_score'       => 'float',
+        'comprehension_score' => 'float',
     ];
 
-    /* ── Risk level badge class ── */
-    public function riskBadgeClass(): string
+    public function philIriLabel(): string
     {
         return match($this->risk_level) {
-            'Below Expected Literacy Standard'           => 'badge-danger',
-            'Approaching Expected Literacy Standard'     => 'badge-warning',
-            'Meeting or Exceeding Literacy Standard'     => 'badge-success',
-            default                                      => 'badge-secondary',
+            'Below Expected Literacy Standard'       => 'Frustration Level',
+            'Approaching Expected Literacy Standard' => 'Instructional Level',
+            'Meeting or Exceeding Literacy Standard' => 'Independent Level',
+            default                                  => 'Not Yet Assessed',
         };
     }
 
-    /* ── Relationships ── */
-    public function student()
+    public function philIriColor(): string
     {
-        return $this->belongsTo(Student::class);
+        return match($this->risk_level) {
+            'Below Expected Literacy Standard'       => '#C8102E',
+            'Approaching Expected Literacy Standard' => '#c47d0e',
+            'Meeting or Exceeding Literacy Standard' => '#0d9448',
+            default                                  => '#94a3b8',
+        };
     }
 
-    public function teacher()
-    {
-        return $this->belongsTo(User::class, 'teacher_id');
-    }
-
-    public function readingLevel()
-    {
-        return $this->belongsTo(ReadingLevel::class);
-    }
-
-    public function intervention()
-    {
-        return $this->hasOne(Intervention::class);
-    }
+    /* ── Relationships ───────────────────────────── */
+    public function student()      { return $this->belongsTo(Student::class); }
+    public function teacher()      { return $this->belongsTo(User::class, 'teacher_id'); }
+    public function intervention() { return $this->hasOne(Intervention::class); }
 }
